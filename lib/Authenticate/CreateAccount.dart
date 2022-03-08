@@ -18,6 +18,7 @@ class _CreateAccountState extends State<CreateAccount> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
+
     return Scaffold(
       body: isLoading
           ? Center(

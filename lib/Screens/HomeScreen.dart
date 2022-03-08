@@ -124,7 +124,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 ),
                 userMap != null
                     ? ListTile(
-                        onTap: () {
+                        onTap: () //=> Navigator.of(context).push(MaterialPageRoute(builder)),
+                     {
                           String roomId = chatRoomId(
                               _auth.currentUser!.displayName!,
                               userMap!['name']);
@@ -138,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             ),
                           );
                         },
+                  //
                         leading: Icon(Icons.account_box, color: Colors.black),
                         title: Text(
                           userMap!['name'],
