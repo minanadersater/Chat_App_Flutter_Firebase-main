@@ -1,4 +1,4 @@
-import 'package:chat_app/Screens/HomeScreen.dart';
+import 'package:chat_app/pages/home.dart';
 import 'package:chat_app/Authenticate/LoginScree.dart';
 import 'package:chat_app/pages/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
