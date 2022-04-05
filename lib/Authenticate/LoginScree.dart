@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_app/Authenticate/CreateAccount.dart';
 import 'package:chat_app/Screens/HomeScreen.dart';
