@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
-
 class ChatRoom extends StatelessWidget {
   final Map<String, dynamic> userMap;
   final String chatRoomId;
@@ -25,12 +24,15 @@ class ChatRoom extends StatelessWidget {
     await _picker.pickImage(source: ImageSource.gallery).then((xFile) {
       if (xFile != null) {
         imageFile = File(xFile.path);
-        uploadImage();
+
       }
-    });
+    }
+    );
+    await         uploadImage();
+
   }
 
-  Future uploadImage() async {
+    Future uploadImage() async {
     String fileName = Uuid().v1();
     int status = 1;
 
@@ -46,8 +48,8 @@ class ChatRoom extends StatelessWidget {
       "time": FieldValue.serverTimestamp(),
     });
 
-    var ref =
-        FirebaseStorage.instance.ref().child('images').child("$fileName.jpg");
+    var  ref =
+    FirebaseStorage.instance.ref().child('images').child("$fileName.jpg");
 
     var uploadTask = await ref.putFile(imageFile!).catchError((error) async {
       await _firestore
@@ -56,13 +58,11 @@ class ChatRoom extends StatelessWidget {
           .collection('chats')
           .doc(fileName)
           .delete();
-
       status = 0;
     });
 
     if (status == 1) {
       String imageUrl = await uploadTask.ref.getDownloadURL();
-
       await _firestore
           .collection('chatroom')
           .doc(chatRoomId)
@@ -97,12 +97,11 @@ class ChatRoom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: AppBar(
         title: StreamBuilder<DocumentSnapshot>(
           stream:
-              _firestore.collection("users").doc(userMap['uid']).snapshots(),
+          _firestore.collection("users").doc(userMap['uid']).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.data != null) {
               return Container(
@@ -191,52 +190,83 @@ class ChatRoom extends StatelessWidget {
   }
 
   Widget messages(Size size, Map<String, dynamic> map, BuildContext context) {
-    return Builder(builder: (_) {
-      if (map['type'] == "text") {
-        return Container(
-          width: size.width,
-          alignment: map['sendBy'] == _auth.currentUser!.displayName
-              ? Alignment.centerRight
-              : Alignment.centerLeft,
-          child: Container(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 14),
-              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.blue,
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    map['message'],
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              )),
-        );
-      } else if (map['type'] == "img") {
-        return Container(
-          width: size.width,
-          alignment: map['sendBy'] == _auth.currentUser!.displayName
-              ? Alignment.centerRight
-              : Alignment.centerLeft,
+    return map['type'] == "text"
+        ? Container(
+      width: size.width,
+      alignment: map['sendby'] == _auth.currentUser!.displayName
+          ? Alignment.centerRight
+          : Alignment.centerLeft,
+        child: InkWell(
+          onTap: (){
+           // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+             // content: Text('Tap'),
+              final snackBar =SnackBar(
+                content: Text('delete this masseage'),
+                backgroundColor: Colors.blueAccent,
+                behavior: SnackBarBehavior.floating,
+                action: SnackBarAction(label: 'delete',
+                    disabledTextColor:Colors.white,
+                    textColor: Colors.white,
+                    onPressed: (){
+                  print("yes");
+                  print(map['message']);
+                },
+                ),
+            );
+
+            Scaffold.of(context).showSnackBar(snackBar);
+         // Scaffold.of(context).showSnackBar(snackBarr);
+          },
+
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
             margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-            height: size.height / 2,
-            child: Image.network(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.blue,
+            ),
+            child: Text(
               map['message'],
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
             ),
           ),
-        );
-      }  else {
-        return SizedBox();
-      }
-    });
+        ),
+
+      )
+
+        : Container(
+      height: size.height / 2.5,
+      width: size.width,
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+      alignment: map['sendby'] == _auth.currentUser!.displayName
+          ? Alignment.centerRight
+          : Alignment.centerLeft,
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ShowImage(
+              imageUrl: map['message'],
+            ),
+          ),
+        ),
+        child: Container(
+          height: size.height / 2.5,
+          width: size.width / 2,
+          decoration: BoxDecoration(border: Border.all()),
+          alignment: map['message'] != "" ? null : Alignment.center,
+          child: map['message'] != ""
+              ? Image.network(
+            map['message'],
+            fit: BoxFit.cover,
+          )
+              : CircularProgressIndicator(),
+        ),
+      ),
+    );
   }
 }
 
@@ -256,6 +286,9 @@ class ShowImage extends StatelessWidget {
         color: Colors.black,
         child: Image.network(imageUrl),
       ),
+
     );
+
   }
+
 }

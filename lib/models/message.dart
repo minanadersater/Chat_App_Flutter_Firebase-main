@@ -2,11 +2,12 @@ import 'package:chat_app/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Message{
-  String? content;
   String? uid;
+  String? content;
   String? senderUID;
   String? reciverUID;
   Timestamp? createAt;
+  Message({this.content,this.createAt,this.reciverUID,this.senderUID,this.uid});
   Message.fromJson(Map<String,dynamic>json,String id){
     uid =id;
     content=json['content'];
@@ -16,10 +17,10 @@ class Message{
   }
   Map<String,dynamic>toJson(){
     return{
-      'createAt':createAt,
-      'reciverUID':reciverUID,
+      'content':content,
       'senderUID':senderUID,
-      'content':content
+      'reciverUID':reciverUID,
+      'createAt':createAt
     };
   }
   bool get isMe => AuthServices().user.uid==senderUID;

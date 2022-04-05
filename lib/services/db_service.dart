@@ -23,7 +23,7 @@ class DBServices{
   Stream<List<Message>>getMessage (String reciverUID,[bool myMessage =true]){
     return msgCollection
         .where('senderUID',isNotEqualTo: myMessage?AuthServices().user.uid:reciverUID)
-        .where('reciverUID',isEqualTo:myMessage? reciverUID:AuthServices().user.uid)
+         .where('reciverUID',isEqualTo:myMessage? reciverUID:AuthServices().user.uid)
         .snapshots()
         .map((event) =>
         event.docs.map((e) =>Message.fromJson(e.data(), e.id)).toList());

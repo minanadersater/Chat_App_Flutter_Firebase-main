@@ -30,13 +30,13 @@ class ChatPage extends StatelessWidget {
                     stream: DBServices().getMessage(user!.uid!,false),
                       builder: (context,s2){
                         if(s2.hasData){
-                            var messages=[...s2.data!,...s2.data!];
+                            var messages=[...s1.data!,...s2.data!];
                             messages
                                 .sort((i,j)=>i.createAt!.compareTo(j.createAt!));
                             messages=messages.reversed.toList();
                             return messages.length==0
                                 ?Center(
-                              child: Text('Aucun message'),
+                                  child: Text('Aucun message'),
                             ):
                         ListView.builder(
                           reverse:true ,

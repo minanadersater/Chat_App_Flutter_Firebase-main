@@ -37,23 +37,25 @@ class HomePage extends StatelessWidget {
                    itemBuilder:(ctx,i){
                       final user =users[i];
                       return  ListTile(
-                  onTap: (){
-                    navigateToNextPage(context, ChatPage(
-                      user: user,
-                    ));
+                        onTap: (){
+                           navigateToNextPage(
+                               context,
+                               ChatPage(
+                                  user: user,
+                               ));
                   },
-                  leading: Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      shape:BoxShape.circle,
-                      color: Colors.grey.withOpacity(.5)
-                    ),
-                    child: Icon(Icons.person),
-                  ),
-                  title: Text(user.name!),
-                  subtitle: Text(user.email!),
+                        leading: Container(
+                          alignment: Alignment.center,
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                              shape:BoxShape.circle,
+                               color: Colors.grey.withOpacity(.5)
+                         ),
+                          child: Icon(Icons.person),
+                        ),
+                       title: Text(user.name!),
+                        subtitle: Text(user.email!),
                 );
               });
             }else{

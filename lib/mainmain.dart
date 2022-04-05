@@ -20,7 +20,6 @@ class MyApp extends StatelessWidget {
       title:("chat :${AuthServices().user.email}"),
       theme: ThemeData(
         primarySwatch: Colors.blue,
-
       ),
       home: StreamBuilder(
         stream: AuthServices().onChangedUser,

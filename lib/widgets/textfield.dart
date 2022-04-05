@@ -16,7 +16,8 @@ class CTextfield extends StatelessWidget {
       obscureText:obscureText!,
       decoration:InputDecoration(
         prefixIcon:  prefix ,
-        hintText: hint??''),
+        hintText: hint??''
+      ),
       keyboardType: keyboardType,
 
     );

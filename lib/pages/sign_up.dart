@@ -33,9 +33,16 @@ class RegisterPage extends StatelessWidget {
                         SizedBox(height: 30,),
                         CTextfield(
                           controller: emailController,
+                          prefix: Icon(Icons.vpn_key),
+                          keyboardType: TextInputType.emailAddress,
+                          hint: "enter votre nom",
+                        ),
+                        SizedBox(height: 30,),
+                        CTextfield(
+                          controller: emailController,
                           prefix: Icon(Icons.email),
                           keyboardType: TextInputType.emailAddress,
-                          hint: "enter email",
+                          hint: "enter votre email",
                         ),
                         SizedBox(height: 30,),
                         CTextfield(
@@ -82,9 +89,8 @@ class RegisterPage extends StatelessWidget {
                             TextButton(
                                 onPressed: () {
                                 Navigator.of(context).pop();
-
                                 },
-                                child: Text('inscription'))
+                                child: Text('connexion'))
                           ],
                         )
                       ],
