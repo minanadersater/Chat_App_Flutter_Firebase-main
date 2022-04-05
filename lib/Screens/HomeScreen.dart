@@ -41,11 +41,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
-  String chatRoomId(String user1, String user2) {
+  String chatRoomIdhome(String user1, String user2) {
     if (user1[0].toLowerCase().codeUnits[0] >
         user2.toLowerCase().codeUnits[0]) {
       return "$user1$user2";
-    } else {
+    } 
+    else {
       return "$user2$user1";
     }
   }
@@ -56,18 +57,22 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     setState(() {
       isLoading = true;
     });
-
-    await _firestore
-        .collection('users')
-        .where("email", isEqualTo: _search.text)
-        .get()
-        .then((value) {
-      setState(() {
-        userMap = value.docs[0].data();
-        isLoading = false;
+    if (_search.text.isNotEmpty) {
+      await _firestore
+          .collection('users')
+          .where("email", isEqualTo: _search.text)
+          .get()
+          .then((value) {
+        setState(() {
+          userMap = value.docs[0].data();
+          isLoading = false;
+        });
+        print(userMap);
       });
-      print(userMap);
-    });
+    } else {
+      isLoading = false;
+      return;
+    }
   }
 
   @override
@@ -124,9 +129,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 ),
                 userMap != null
                     ? ListTile(
-                        onTap: () //=> Navigator.of(context).push(MaterialPageRoute(builder)),
-                     {
-                          String roomId = chatRoomId(
+                        onTap:
+                            () //=> Navigator.of(context).push(MaterialPageRoute(builder)),
+                            {
+                          String roomId = chatRoomIdhome(
                               _auth.currentUser!.displayName!,
                               userMap!['name']);
 
@@ -139,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             ),
                           );
                         },
-                  //
+                        //
                         leading: Icon(Icons.account_box, color: Colors.black),
                         title: Text(
                           userMap!['name'],
