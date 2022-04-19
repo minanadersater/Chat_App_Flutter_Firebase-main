@@ -38,11 +38,40 @@ class GroupChatRoom extends StatelessWidget {
       print("Enter Some Text");
     }
   }
+  Widget drawer(BuildContext context) {
+  return Drawer(    
+    child: SafeArea(
+      child: Column(        
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+        Row(mainAxisAlignment:MainAxisAlignment.start ,
+         children: [
+            Title(color: Colors.black, child:Text(groupName,textAlign: TextAlign.start,style: TextStyle(fontSize: 50))),
+          ],
+        ) , 
+         SizedBox(height: 50),      
+         IconButton(onPressed:  ()=> Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => AddMembersInGroup(),
+            ),
+           ) ,icon:Icon(Icons.create))
+           ,ListView(
+             shrinkWrap: true,
+            children: [
+              
+            ],
+            )
+      ],
+      ),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
+      drawer: drawer(context),
       appBar: AppBar(
         title: Text(groupName),
         actions: [
@@ -56,7 +85,8 @@ class GroupChatRoom extends StatelessWidget {
                     ),
                   ),
               icon: Icon(Icons.more_vert)),
-        ],
+              ],
+        
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -129,19 +159,7 @@ class GroupChatRoom extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: Padding (
-        padding: const EdgeInsets.only(bottom: 100.0,),
-        child:FloatingActionButton(
-          child: Icon(Icons.create),
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => AddMembersInGroup(),
-          ),
-
-        ),
-        tooltip: "Create Group",
-      ),
-      ),
+      
     );
   }
 

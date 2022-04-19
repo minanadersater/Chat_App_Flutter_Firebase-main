@@ -52,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   void onSearch() async {
-    FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
     setState(() {
       isLoading = true;
