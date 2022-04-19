@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (_search.text.isNotEmpty) {
       await _firestore
           .collection('users')
-          .where("email", isEqualTo: _search.text)
+          .where("email", isEqualTo: _search.text.trim())
           .get()
           .then((value) {
         setState(() {
@@ -108,6 +108,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     width: size.width / 1.15,
                     child: TextField(
                       controller: _search,
+                      
                       decoration: InputDecoration(
                         hintText: "Search",
                         border: OutlineInputBorder(

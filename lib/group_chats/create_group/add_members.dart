@@ -48,7 +48,7 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
 
     await _firestore
         .collection('users')
-        .where("email", isEqualTo: _search.text)
+        .where("email", isEqualTo: _search.text.trim())
         .get()
         .then((value) {
       setState(() {
@@ -77,7 +77,7 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
           "isAdmin": false,
         });
 
-        userMap = null;
+        
       });
     }
   }

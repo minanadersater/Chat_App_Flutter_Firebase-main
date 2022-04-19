@@ -40,7 +40,7 @@ class _CreateGroupState extends State<CreateGroup> {
           .collection('groups')
           .doc(groupId)
           .set({
-        "name": _groupName.text,
+        "name": _groupName.text.trim(),
         "id": groupId,
       });
     }

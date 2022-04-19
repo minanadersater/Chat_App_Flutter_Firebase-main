@@ -22,7 +22,7 @@ class GroupChatRoom extends StatelessWidget {
     if (_message.text.isNotEmpty) {
       Map<String, dynamic> chatData = {
         "sendBy": _auth.currentUser!.displayName,
-        "message": _message.text,
+        "message": _message.text.trim(),
         "type": "text",
         "time": FieldValue.serverTimestamp(),
       };

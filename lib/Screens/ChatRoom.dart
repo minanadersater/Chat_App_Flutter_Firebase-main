@@ -22,7 +22,7 @@ class ChatRoom extends StatelessWidget {
     if (_message.text.isNotEmpty) {
       Map<String, dynamic> messages = {
         "sendBy": _auth.currentUser!.displayName,
-        "message": _message.text,
+        "message": _message.text.trim(),
         "type": "text",
         "time": FieldValue.serverTimestamp(),
       };

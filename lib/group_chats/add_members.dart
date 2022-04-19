@@ -36,7 +36,7 @@ class _AddMembersINGroupState extends State<AddMembersINGroup> {
 
     await _firestore
         .collection('users')
-        .where("email", isEqualTo: _search.text)
+        .where("email", isEqualTo: _search.text.trim())
         .get()
         .then((value) {
       setState(() {
@@ -48,8 +48,26 @@ class _AddMembersINGroupState extends State<AddMembersINGroup> {
   }
 
   void onAddMembers() async {
-    membersList.add(userMap);
+    bool isAlreadyExist = false;
 
+    for (int i = 0; i < membersList.length; i++) {
+      if (membersList[i]['uid'] == userMap!['uid']) {
+        isAlreadyExist = true;
+      }
+    }
+
+    if (!isAlreadyExist) {
+      setState(() {
+        membersList.add({
+          "name": userMap!['name'],
+          "email": userMap!['email'],
+          "uid": userMap!['uid'],
+          "isAdmin": false,
+        });
+
+       
+      });
+    }
     await _firestore.collection('groups').doc(widget.groupChatId).update({
       "members": membersList,
     });
@@ -60,7 +78,8 @@ class _AddMembersINGroupState extends State<AddMembersINGroup> {
         .collection('groups')
         .doc(widget.groupChatId)
         .set({"name": widget.name, "id": widget.groupChatId});
-  }
+ 
+  } 
 
   @override
   Widget build(BuildContext context) {
