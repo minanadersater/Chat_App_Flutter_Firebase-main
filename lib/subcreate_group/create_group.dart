@@ -4,16 +4,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-class CreateGroup extends StatefulWidget {
+class CreateSubGroup extends StatefulWidget {
   final List<Map<String, dynamic>> membersList;
-
-  const CreateGroup({required this.membersList, Key? key}) : super(key: key);
+  final String groupId;
+  const CreateSubGroup({required this.membersList,required this.groupId, Key? key}) : super(key: key);
 
   @override
-  State<CreateGroup> createState() => _CreateGroupState();
+  State<CreateSubGroup> createState() => _CreateSubGroupState();
 }
 
-class _CreateGroupState extends State<CreateGroup> {
+class _CreateSubGroupState extends State<CreateSubGroup> {
   final TextEditingController _groupName = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -23,12 +23,16 @@ class _CreateGroupState extends State<CreateGroup> {
     setState(() {
       isLoading = true;
     });
+    String subgroupId = Uuid().v1();
 
-    String groupId = Uuid().v1();
-
-    await _firestore.collection('groups').doc(groupId).set({
+    await _firestore
+        .collection('groups')
+        .doc(widget.groupId)
+        .collection('sub_group')
+        .doc(subgroupId)
+        .set({
       "members": widget.membersList,
-      "id": groupId,
+      "id": widget.groupId,
     });
 
     for (int i = 0; i < widget.membersList.length; i++) {
@@ -38,14 +42,22 @@ class _CreateGroupState extends State<CreateGroup> {
           .collection('users')
           .doc(uid)
           .collection('groups')
-          .doc(groupId)
+          .doc(widget.groupId)
+          .collection('sub_group')
+          .doc(subgroupId)
           .set({
         "name": _groupName.text.trim(),
-        "id": groupId,
+        "id": widget.groupId,
       });
     }
 
-    await _firestore.collection('groups').doc(groupId).collection('chats').add({
+    await _firestore
+    .collection('groups')
+    .doc(widget.groupId)
+    .collection('sub_group')
+    .doc(subgroupId)
+    .collection('chats')
+    .add({
       "message": "${_auth.currentUser!.displayName} Created This Group.",
       "type": "notify",
     });

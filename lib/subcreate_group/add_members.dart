@@ -1,22 +1,23 @@
-import 'package:chat_app/group_chats/create_group/create_group.dart';
+import 'package:chat_app/subcreate_group/create_group.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AddMembersInsubGroup extends StatefulWidget {
-  const AddMembersInsubGroup({Key? key}) : super(key: key);
+  final String groupChatId;
+  const AddMembersInsubGroup({required this.groupChatId, Key? key})
+      : super(key: key);
 
   @override
   State<AddMembersInsubGroup> createState() => _AddMembersInsubGroup();
 }
-
-
 
 class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
   final TextEditingController _search = TextEditingController();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   List<Map<String, dynamic>> membersList = [];
+  List membersListadd = [];
   bool isLoading = false;
   Map<String, dynamic>? userMap;
 
@@ -43,22 +44,23 @@ class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
     });
   }
 
-  void onSearch() async {
-    setState(() {
-      isLoading = true;
-    });
-
+  Future onSearch() async {
     await _firestore
-        .collection('users')
-        .where("email", isEqualTo: _search.text)
+        .collection('groups')
+        .doc(widget.groupChatId)
         .get()
-        .then((value) {
-      setState(() {
-        userMap = value.docs[0].data();
-        isLoading = false;
-      });
-      print(userMap);
+        .then((chatMap) {
+      membersListadd = chatMap['members'];
+      setState(() {});
     });
+    for (int i = 0; i < membersListadd.length; i++) {
+      if (membersListadd[i]["email"] == _search.text.trim()) {
+        setState(() {
+          userMap = membersListadd[i];
+        });
+        print(userMap);
+      }
+    }
   }
 
   void onResultTap() {
@@ -172,8 +174,9 @@ class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
               child: Icon(Icons.forward),
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => CreateGroup(
+                  builder: (_) => CreateSubGroup(
                     membersList: membersList,
+                    groupId: widget.groupChatId,
                   ),
                 ),
               ),

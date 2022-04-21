@@ -34,7 +34,6 @@ class _GroupInfoState extends State<GroupInfo> {
         .get()
         .then((chatMap) {
       membersList = chatMap['members'];
-      print(membersList);
       isLoading = false;
       setState(() {});
     });

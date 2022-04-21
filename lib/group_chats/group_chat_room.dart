@@ -1,10 +1,11 @@
+import 'package:chat_app/group_chats/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/group_chats/group_info.dart';
 import '../packges/download.dart';
 import '../packges/upload_file.dart';
-import 'create_group/add_members.dart';
+import '../subcreate_group/add_members.dart';
 
 class GroupChatRoom extends StatelessWidget {
   final String groupChatId, groupName;
@@ -38,40 +39,13 @@ class GroupChatRoom extends StatelessWidget {
       print("Enter Some Text");
     }
   }
-  Widget drawer(BuildContext context) {
-  return Drawer(    
-    child: SafeArea(
-      child: Column(        
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-        Row(mainAxisAlignment:MainAxisAlignment.start ,
-         children: [
-            Title(color: Colors.black, child:Text(groupName,textAlign: TextAlign.start,style: TextStyle(fontSize: 50))),
-          ],
-        ) , 
-         SizedBox(height: 50),      
-         IconButton(onPressed:  ()=> Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => AddMembersInGroup(),
-            ),
-           ) ,icon:Icon(Icons.create))
-           ,ListView(
-             shrinkWrap: true,
-            children: [
-              
-            ],
-            )
-      ],
-      ),
-    ),
-  );
-}
+ 
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      drawer: drawer(context),
+      drawer:drawer(groupChatId: groupChatId, groupName: groupName) ,
       appBar: AppBar(
         title: Text(groupName),
         actions: [
@@ -257,28 +231,7 @@ class GroupChatRoom extends StatelessWidget {
                 ],
               )),
         );
-        } else if (chatMap['type'] == "notify") {
-        return Container(
-          width: size.width,
-          alignment: Alignment.center,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.black38,
-            ),
-            child: Text(
-              chatMap['message'],
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        );
-      } else {
+        } else {
         return SizedBox();
       }
     });
