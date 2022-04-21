@@ -18,7 +18,6 @@ class _CreateAccountState extends State<CreateAccount> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-
     return Scaffold(
       body: isLoading
           ? Center(
@@ -122,8 +121,11 @@ class _CreateAccountState extends State<CreateAccount> {
             isLoading = true;
           });
 
-          createAccount(_name.text.trim(), _email.text.trim(), _password.text.trim()).then((user) {
+          createAccount(
+                  _name.text.trim(), _email.text.trim(), _password.text.trim())
+              .then((user) {
             if (user != null) {
+              Navigator.pop(context);
               setState(() {
                 isLoading = false;
               });
@@ -134,6 +136,8 @@ class _CreateAccountState extends State<CreateAccount> {
               print("Login Failed");
               setState(() {
                 isLoading = false;
+                _email.clear();
+                _password.clear();
               });
             }
           });

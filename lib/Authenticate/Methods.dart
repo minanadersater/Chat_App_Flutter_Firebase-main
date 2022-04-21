@@ -55,6 +55,7 @@ Future<User?> logIn(String email, String password) async {
 Future logOut(BuildContext context) async {
   FirebaseAuth _auth = FirebaseAuth.instance;
   try {
+    
     await _auth.signOut().then((value) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => LoginScreen()));
     });

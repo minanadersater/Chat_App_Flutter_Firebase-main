@@ -8,11 +8,12 @@ class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
+
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   bool isLoading = false;
-  bool? obscureTextemail =false;
+  bool? obscureTextemail = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -30,33 +31,20 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: size.height / 20,
+                    height: size.height / 10,
                   ),
                   Container(
-                    alignment: Alignment.centerLeft,
-                    width: size.width / 0.5,
-                    child: IconButton(
-                        icon: Icon(Icons.arrow_back_ios), onPressed: () {}),
-                  ),
-                  SizedBox(
-                    height: size.height / 50,
-                  ),
-
-                  Container(
-
-                      width: size.width / 1.1,
+                    width: size.width / 1.1,
                     child: DefaultTextStyle(
                       style: const TextStyle(
-                          fontSize:34,
-                          fontWeight: FontWeight.bold ,
-                      color: Colors.black),
+                          fontSize: 34,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
                       child: AnimatedTextKit(
-                        animatedTexts:[
+                        animatedTexts: [
                           WavyAnimatedText('Welcome in A4M'),
                         ],
                         //isRepeatingAnimation: true,
-
-
                       ),
                     ),
                   ),
@@ -77,14 +65,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     width: size.width,
                     alignment: Alignment.center,
-                    child: field(size, "email", Icons.account_box, _email,obscureTextemail=false),
+                    child: field(size, "email", Icons.account_box, _email,
+                        obscureTextemail = false),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 18.0),
                     child: Container(
                       width: size.width,
                       alignment: Alignment.center,
-                      child: field(size, "password", Icons.lock, _password,obscureTextemail=true),
+                      child: field(size, "password", Icons.lock, _password,
+                          obscureTextemail = true),
                     ),
                   ),
                   SizedBox(
@@ -122,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           logIn(_email.text.trim(), _password.text.trim()).then((user) {
             if (user != null) {
-              print("Login Sucessfull");
+              Navigator.pop(context);
               setState(() {
                 isLoading = false;
               });
@@ -132,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
               print("Login Failed");
               setState(() {
                 isLoading = false;
+                _password.clear();
               });
             }
           });
@@ -158,15 +149,15 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget field(
-      Size size, String hintText, IconData icon, TextEditingController cont,obscureTextemail) {
+  Widget field(Size size, String hintText, IconData icon,
+      TextEditingController cont, obscureTextemail) {
     return Container(
       height: size.height / 14,
       width: size.width / 1.1,
       child: TextField(
         maxLines: 1,
         controller: cont,
-        obscureText:obscureTextemail,
+        obscureText: obscureTextemail,
         decoration: InputDecoration(
           prefixIcon: Icon(icon),
           hintText: hintText,

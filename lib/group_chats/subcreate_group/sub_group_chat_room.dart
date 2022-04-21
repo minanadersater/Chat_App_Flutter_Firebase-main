@@ -1,22 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../packges/upload_file.dart';
-import '../widgets/massege.dart';
+import 'package:chat_app/group_chats/group/group_info.dart';
+import '../../packges/upload_file.dart';
+import '../../widgets/massege.dart';
+class SubGroupChatRoom extends StatelessWidget {
+  final String groupChatId,subgroupChatId, groupName;
 
-class ChatRoom extends StatelessWidget {
-  final Map<String, dynamic> userMap;
-  final String chatRoomId;
-
-  ChatRoom({required this.chatRoomId, required this.userMap});
+  SubGroupChatRoom({required this.groupName, required this.groupChatId, Key? key, required this.subgroupChatId})
+      : super(key: key);
 
   final TextEditingController _message = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  static String collection = 'chatroom';
+  static String collection = 'groups';
+
+
   void onSendMessage() async {
     if (_message.text.isNotEmpty) {
-      Map<String, dynamic> messages = {
+      Map<String, dynamic> chatData = {
         "sendBy": _auth.currentUser!.displayName,
         "message": _message.text.trim(),
         "type": "text",
@@ -24,63 +26,61 @@ class ChatRoom extends StatelessWidget {
       };
 
       _message.clear();
+
       await _firestore
           .collection(collection)
-          .doc(chatRoomId)
+          .doc(groupChatId)
+          .collection('sub_group')
+          .doc(subgroupChatId)
           .collection('chats')
-          .add(messages);
-    } else {
+          .add(chatData);
+    }else{
       print("Enter Some Text");
     }
   }
+ 
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: StreamBuilder<DocumentSnapshot>(
-          stream:
-              _firestore.collection("users").doc(userMap['uid']).snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.data != null) {
-              return Container(
-                child: Column(
-                  children: [
-                    Text(userMap['name']),
-                    Text(
-                      snapshot.data!['status'],
-                      style: TextStyle(fontSize: 14),
+        appBar: AppBar(
+        title: Text(groupName),
+        actions: [
+          IconButton(
+              onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => GroupInfo(
+                        groupName: groupName,
+                        groupId: groupChatId,
+                      ),
                     ),
-                  ],
-                ),
-              );
-            } else {
-              return Container();
-            }
-          },
-        ),
+                  ),
+              icon: Icon(Icons.more_vert)),
+              ],
+        
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Container(
-              height: size.height / 1.25,
+              height: size.height / 1.27,
               width: size.width,
               child: StreamBuilder<QuerySnapshot>(
                 stream: _firestore
-                    .collection('chatroom')
-                    .doc(chatRoomId)
+                     .collection(collection)
+                    .doc(groupChatId)
+                    .collection('sub_group')
+                    .doc(subgroupChatId)
                     .collection('chats')
-                    .orderBy("time", descending: false)
+                    .orderBy('time')
                     .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.data != null) {
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
                     return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
-                        Map<String, dynamic> map = snapshot.data!.docs[index]
+                       Map<String, dynamic> map = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
                         return massege().messages(size, map, context);
                       },
@@ -108,15 +108,13 @@ class ChatRoom extends StatelessWidget {
                         controller: _message,
                         decoration: InputDecoration(
                             suffixIcon: IconButton(
-                              onPressed: () => Navigator.push(
+                              onPressed: ()  => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => UploadFile(
-                                        chatRoom: chatRoomId,
-                                        collection: collection,
-                                        ),
+                                    builder: (context) =>
+                                        UploadFile(chatRoom: groupChatId,collection:collection),
                                   )),
-                              icon: Icon(Icons.photo),
+                              icon: Icon(Icons.file_upload_outlined),
                             ),
                             hintText: "Send Message",
                             border: OutlineInputBorder(
@@ -133,6 +131,11 @@ class ChatRoom extends StatelessWidget {
           ],
         ),
       ),
+      
     );
   }
-}
+
+
+  
+
+  }

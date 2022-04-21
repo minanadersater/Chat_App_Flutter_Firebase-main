@@ -1,6 +1,6 @@
 import 'package:chat_app/Authenticate/Methods.dart';
 import 'package:chat_app/Screens/ChatRoom.dart';
-import 'package:chat_app/group_chats/group_chat_screen.dart';
+import 'package:chat_app/group_chats/group/group_chat_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -45,14 +45,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (user1[0].toLowerCase().codeUnits[0] >
         user2.toLowerCase().codeUnits[0]) {
       return "$user1$user2";
-    } 
-    else {
+    } else {
       return "$user2$user1";
     }
   }
 
   void onSearch() async {
-
     setState(() {
       isLoading = true;
     });
@@ -74,6 +72,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
+  log_Out(BuildContext context) {
+    setStatus("Offline");
+    logOut(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -82,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       appBar: AppBar(
         title: Text("Home Screen"),
         actions: [
-          IconButton(icon: Icon(Icons.logout), onPressed: () => logOut(context))
+          IconButton(icon: Icon(Icons.logout), onPressed: () => log_Out(context))
         ],
       ),
       body: isLoading
@@ -107,7 +110,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     width: size.width / 1.15,
                     child: TextField(
                       controller: _search,
-                      
                       decoration: InputDecoration(
                         hintText: "Search",
                         border: OutlineInputBorder(

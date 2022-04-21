@@ -32,7 +32,7 @@ class _CreateSubGroupState extends State<CreateSubGroup> {
         .doc(subgroupId)
         .set({
       "members": widget.membersList,
-      "id": widget.groupId,
+      "id": subgroupId,
     });
 
     for (int i = 0; i < widget.membersList.length; i++) {
@@ -47,7 +47,7 @@ class _CreateSubGroupState extends State<CreateSubGroup> {
           .doc(subgroupId)
           .set({
         "name": _groupName.text.trim(),
-        "id": widget.groupId,
+        "id": subgroupId,
       });
     }
 

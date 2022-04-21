@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../subcreate_group/add_members.dart';
-import 'group_chat_room.dart';
+import '../subcreate_group/sub_group_chat_room.dart';
 class drawer extends StatefulWidget {
   const drawer({Key? key, required this.groupChatId, required this.groupName,})
       : super(key: key);
@@ -30,6 +30,8 @@ class _drawerState extends State<drawer> {
         .collection('users')
         .doc(uid)
         .collection('groups')
+        .doc(widget.groupChatId)
+        .collection('sub_group')
         .get()
         .then((value) {
       setState(() {
@@ -64,30 +66,32 @@ class _drawerState extends State<drawer> {
                       ),
                     ),
                 icon: Icon(Icons.create)),
-            Container(
-              height:40,
-              width: 30,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemExtent: 10,
-                itemCount: groupList.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => GroupChatRoom(
-                          groupName: groupList[index]['name'],
-                          groupChatId: groupList[index]['id'],
+             SingleChildScrollView(
+               child: ListView.builder(
+                 shrinkWrap: true,
+                  itemCount: groupList.length,
+                  itemBuilder: (context, index) {
+                    return SizedBox(
+                      height: 50,
+                      width: 30,
+                      child: ListTile(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => SubGroupChatRoom(
+                              groupName: groupList[index]['name'],
+                              groupChatId: widget.groupChatId,
+                              subgroupChatId: groupList[index]['id'],
+                            ),
+                          ),
                         ),
+                        leading: Icon(Icons.group,size: 50),
+                        title: Text(groupList[index]['name'],style: TextStyle(fontSize: 20),),
                       ),
-                    ),
-                    leading: Icon(Icons.group),
-                    title: Text(groupList[index]['name']),
-                  );
-                },
-              ),
-            ),
-          ],
+                    );
+                  },
+                ),
+             ),
+             ],
         ),
       ),
     );
