@@ -7,7 +7,7 @@ import 'package:open_file/open_file.dart';
 downloadFile(String url, String name) async {
   
   if (await Permission.storage.request().isGranted) {
-    final tempdir1 = await getApplicationDocumentsDirectory();
+    //final tempdir = await getApplicationDocumentsDirectory();
     final tempdir = await getTemporaryDirectory();
     final path = '${tempdir.path}/$name';
     bool fileExists = await File(path).exists();

@@ -1,8 +1,5 @@
 import 'package:chat_app/Authenticate/Methods.dart';
 import 'package:flutter/material.dart';
-
-import '../Screens/HomeScreen.dart';
-
 class CreateAccount extends StatefulWidget {
   @override
   _CreateAccountState createState() => _CreateAccountState();
@@ -125,15 +122,11 @@ class _CreateAccountState extends State<CreateAccount> {
                   _name.text.trim(), _email.text.trim(), _password.text.trim())
               .then((user) {
             if (user != null) {
-              Navigator.pop(context);
               setState(() {
                 isLoading = false;
               });
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => HomeScreen()));
-              print("Account Created Sucessfull");
+             Navigator.popAndPushNamed(context, '/');
             } else {
-              print("Login Failed");
               setState(() {
                 isLoading = false;
                 _email.clear();

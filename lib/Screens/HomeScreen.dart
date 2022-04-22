@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:chat_app/Authenticate/Methods.dart';
 import 'package:chat_app/Screens/ChatRoom.dart';
 import 'package:chat_app/group_chats/group/group_chat_screen.dart';

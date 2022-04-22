@@ -24,7 +24,6 @@ class _AddMembersINGroupState extends State<AddMembersINGroup> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     membersList = widget.membersList;
   }

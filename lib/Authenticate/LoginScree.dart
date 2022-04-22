@@ -1,6 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_app/Authenticate/CreateAccount.dart';
-import 'package:chat_app/Screens/HomeScreen.dart';
 import 'package:chat_app/Authenticate/Methods.dart';
 import 'package:flutter/material.dart';
 
@@ -112,15 +111,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
           logIn(_email.text.trim(), _password.text.trim()).then((user) {
             if (user != null) {
-              Navigator.pop(context);
-              setState(() {
+             setState(() {
                 isLoading = false;
               });
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => HomeScreen()));
+             Navigator.popAndPushNamed(context, '/');
             } else {
-              print("Login Failed");
-              setState(() {
+            setState(() {
                 isLoading = false;
                 _password.clear();
               });
