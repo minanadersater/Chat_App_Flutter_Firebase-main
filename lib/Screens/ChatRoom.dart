@@ -14,7 +14,7 @@ class ChatRoom extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   static String collection = 'chatroom';
-  void onSendMessage() async {
+   void onSendMessage() async {
     if (_message.text.isNotEmpty) {
       Map<String, dynamic> messages = {
         "sendBy": _auth.currentUser!.displayName,
@@ -112,9 +112,10 @@ class ChatRoom extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => UploadFile(
-                                        chatRoom: chatRoomId,
-                                        collection: collection,
-                                        ),
+                                      chatRoom: chatRoomId,
+                                      collection: collection,
+                                      layer: '',
+                                    ),
                                   )),
                               icon: Icon(Icons.photo),
                             ),

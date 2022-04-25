@@ -51,16 +51,6 @@ class _CreateSubGroupState extends State<CreateSubGroup> {
       });
     }
 
-    await _firestore
-    .collection('groups')
-    .doc(widget.groupId)
-    .collection('sub_group')
-    .doc(subgroupId)
-    .collection('chats')
-    .add({
-      "message": "${_auth.currentUser!.displayName} Created This Group.",
-      "type": "notify",
-    });
 
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => HomeScreen()), (route) => false);

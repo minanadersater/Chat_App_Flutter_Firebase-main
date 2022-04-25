@@ -1,50 +1,38 @@
-import 'package:chat_app/group_chats/subcreate_group/create_group.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class AddMembersInsubGroup extends StatefulWidget {
-  final String groupChatId;
-  const AddMembersInsubGroup({required this.groupChatId, Key? key})
+class AddMembersINSubGroup extends StatefulWidget {
+  final String groupChatId, name, subgroupId;
+  final List membersList;
+  const AddMembersINSubGroup(
+      {required this.name,
+      required this.membersList,
+      required this.groupChatId,
+      Key? key, required this.subgroupId})
       : super(key: key);
 
   @override
-  State<AddMembersInsubGroup> createState() => _AddMembersInsubGroup();
+  _AddMembersINSubGroupState createState() => _AddMembersINSubGroupState();
 }
 
-class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
+class _AddMembersINSubGroupState extends State<AddMembersINSubGroup> {
   final TextEditingController _search = TextEditingController();
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  List<Map<String, dynamic>> membersList = [];
-  List membersListadd = [];
-  bool isLoading = false;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Map<String, dynamic>? userMap;
+  bool isLoading = false;
+  List membersList = [];
+  List membersListadd = [];
 
   @override
   void initState() {
     super.initState();
-    getCurrentUserDetails();
+    membersList = widget.membersList;
   }
 
-  void getCurrentUserDetails() async {
-    await _firestore
-        .collection('users')
-        .doc(_auth.currentUser!.uid)
-        .get()
-        .then((map) {
-      setState(() {
-        membersList.add({
-          "name": map['name'],
-          "email": map['email'],
-          "uid": map['uid'],
-          "isAdmin": true,
-        });
-      });
+  void onSearch() async {
+    setState(() {
+      isLoading = true;
     });
-  }
-
-  Future onSearch() async {
     await _firestore
         .collection('groups')
         .doc(widget.groupChatId)
@@ -62,7 +50,7 @@ class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
     }
   }
 
-  void onResultTap() {
+  void onAddMembers() async {
     bool isAlreadyExist = false;
 
     for (int i = 0; i < membersList.length; i++) {
@@ -80,18 +68,28 @@ class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
           "isAdmin": false,
         });
 
-        userMap = null;
+       
       });
     }
-  }
+    await _firestore
+    .collection('groups')
+    .doc(widget.groupChatId)
+    .collection('sub_group')
+    .doc(widget.subgroupId)
+    .update({
+      "members": membersList,
+    });
 
-  void onRemoveMembers(int index) {
-    if (membersList[index]['uid'] != _auth.currentUser!.uid) {
-      setState(() {
-        membersList.removeAt(index);
-      });
-    }
-  }
+    await _firestore
+        .collection('users')
+        .doc(userMap!['uid'])
+        .collection('groups')
+        .doc(widget.groupChatId)
+        .collection('sub_group')
+        .doc(widget.subgroupId)
+        .set({"name": widget.name, "id": widget.groupChatId});
+ 
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -105,22 +103,6 @@ class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(
-              child: ListView.builder(
-                itemCount: membersList.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () => onRemoveMembers(index),
-                    leading: Icon(Icons.account_circle),
-                    title: Text(membersList[index]['name']),
-                    subtitle: Text(membersList[index]['email']),
-                    trailing: Icon(Icons.close),
-                  );
-                },
-              ),
-            ),
             SizedBox(
               height: size.height / 20,
             ),
@@ -158,7 +140,7 @@ class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
                   ),
             userMap != null
                 ? ListTile(
-                    onTap: onResultTap,
+                    onTap: onAddMembers,
                     leading: Icon(Icons.account_box),
                     title: Text(userMap!['name']),
                     subtitle: Text(userMap!['email']),
@@ -168,19 +150,6 @@ class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
           ],
         ),
       ),
-      floatingActionButton: membersList.length >= 2
-          ? FloatingActionButton(
-              child: Icon(Icons.forward),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => CreateSubGroup(
-                    membersList: membersList,
-                    groupId: widget.groupChatId,
-                  ),
-                ),
-              ),
-            )
-          : SizedBox(),
     );
   }
 }

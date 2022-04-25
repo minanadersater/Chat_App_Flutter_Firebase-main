@@ -1,21 +1,24 @@
+import 'package:chat_app/group_chats/sub_group/group_info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_app/group_chats/group/group_info.dart';
 import '../../packges/upload_file.dart';
 import '../../widgets/massege.dart';
-class SubGroupChatRoom extends StatelessWidget {
-  final String groupChatId,subgroupChatId, groupName;
 
-  SubGroupChatRoom({required this.groupName, required this.groupChatId, Key? key, required this.subgroupChatId})
+class SubGroupChatRoom extends StatelessWidget {
+  final String groupChatId, subgroupChatId, groupName;
+
+  SubGroupChatRoom(
+      {required this.groupName,
+      required this.groupChatId,
+      Key? key,
+      required this.subgroupChatId})
       : super(key: key);
 
   final TextEditingController _message = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   static String collection = 'groups';
-
-
   void onSendMessage() async {
     if (_message.text.isNotEmpty) {
       Map<String, dynamic> chatData = {
@@ -34,31 +37,30 @@ class SubGroupChatRoom extends StatelessWidget {
           .doc(subgroupChatId)
           .collection('chats')
           .add(chatData);
-    }else{
+    } else {
       print("Enter Some Text");
     }
   }
- 
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         title: Text(groupName),
         actions: [
           IconButton(
               onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => GroupInfo(
+                      builder: (_) => SubGroupInfo(
                         groupName: groupName,
                         groupId: groupChatId,
+                        subgroupId: subgroupChatId,
                       ),
                     ),
                   ),
               icon: Icon(Icons.more_vert)),
-              ],
-        
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -68,7 +70,7 @@ class SubGroupChatRoom extends StatelessWidget {
               width: size.width,
               child: StreamBuilder<QuerySnapshot>(
                 stream: _firestore
-                     .collection(collection)
+                    .collection(collection)
                     .doc(groupChatId)
                     .collection('sub_group')
                     .doc(subgroupChatId)
@@ -80,7 +82,7 @@ class SubGroupChatRoom extends StatelessWidget {
                     return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
-                       Map<String, dynamic> map = snapshot.data!.docs[index]
+                        Map<String, dynamic> map = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
                         return massege().messages(size, map, context);
                       },
@@ -108,11 +110,14 @@ class SubGroupChatRoom extends StatelessWidget {
                         controller: _message,
                         decoration: InputDecoration(
                             suffixIcon: IconButton(
-                              onPressed: ()  => Navigator.push(
+                              onPressed: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        UploadFile(chatRoom: groupChatId,collection:collection),
+                                    builder: (context) => UploadFile(
+                                      chatRoom: groupChatId,
+                                      collection: collection,
+                                      layer: subgroupChatId,
+                                    ),
                                   )),
                               icon: Icon(Icons.file_upload_outlined),
                             ),
@@ -131,11 +136,6 @@ class SubGroupChatRoom extends StatelessWidget {
           ],
         ),
       ),
-      
     );
   }
-
-
-  
-
-  }
+}

@@ -1,4 +1,4 @@
-import 'package:chat_app/group_chats/group/drawer.dart';
+import 'package:chat_app/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +16,6 @@ class GroupChatRoom extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   static String collection = 'groups';
-
-
   void onSendMessage() async {
     if (_message.text.isNotEmpty) {
       Map<String, dynamic> chatData = {
@@ -111,7 +109,7 @@ class GroupChatRoom extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        UploadFile(chatRoom: groupChatId,collection:collection),
+                                        UploadFile(chatRoom: groupChatId,collection:collection, layer: '',),
                                   )),
                               icon: Icon(Icons.file_upload_outlined),
                             ),

@@ -8,10 +8,11 @@ import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
 class UploadFile extends StatefulWidget {
-  const UploadFile({Key? key, required this.chatRoom, required this.collection,})
+  const UploadFile({Key? key, required this.chatRoom, required this.collection,required this.layer,})
       : super(key: key);
   final String chatRoom;
   final String collection;
+  final String layer;
 
   @override
   _UploadFileState createState() => _UploadFileState();
@@ -90,7 +91,31 @@ class _UploadFileState extends State<UploadFile> {
 
   
     String fileNameid = Uuid().v1();
-    await _firestore
+    if(widget.layer!=''){
+       await _firestore
+          .collection(widget.collection)
+          .doc(widget.chatRoom)
+          .collection('sub_group')
+          .doc(widget.layer)
+          .collection('chats')
+           .doc(fileNameid)
+          .set({
+        "sendBy": _auth.currentUser!.displayName,
+        "message": "",
+        "filename": fileName,
+        "type": "files",
+        "time": FieldValue.serverTimestamp(),
+      });
+       await _firestore
+          .collection(widget.collection)
+          .doc(widget.chatRoom)
+          .collection('sub_group')
+          .doc(widget.layer)
+          .collection('chats')
+           .doc(fileNameid)
+          .update({"message": urlDownload});
+    }else{
+      await _firestore
         .collection(widget.collection)
         .doc(widget.chatRoom)
         .collection('chats')
@@ -108,8 +133,9 @@ class _UploadFileState extends State<UploadFile> {
         .collection('chats')
         .doc(fileNameid)
         .update({"message": urlDownload});
+    }
+    
 
-    print(urlDownload);
   }
 
   Widget buildUploadStatus(UploadTask task) => StreamBuilder<TaskSnapshot>(

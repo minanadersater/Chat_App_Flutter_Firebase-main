@@ -6,9 +6,8 @@ import '../packges/download.dart';
 class massege {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Widget messages(Size size, Map<String, dynamic> map, BuildContext context) {
-    return Builder(builder: (_) {
-      if (map['type'] == "text") {
-        return Container(
+    return map['type'] == "text" 
+        ?Container(
           width: size.width,
           alignment: map['sendBy'] == _auth.currentUser!.displayName
               ? Alignment.centerRight
@@ -66,9 +65,8 @@ class massege {
                   ],
                 )),
           ),
-        );
-      } else if (map['type'] == "files") {
-        return  Container(
+        )
+       :  Container(
           width: size.width,
           alignment: map['sendBy'] == _auth.currentUser!.displayName
               ? Alignment.centerRight
@@ -119,11 +117,10 @@ class massege {
                     ),
                   ),
                 ],
-              )),
+              )
+              ),
         );
-      } else {
-        return SizedBox();
-      }
-    });
+      
+    }
   }
-}
+
