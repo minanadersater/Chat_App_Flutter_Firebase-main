@@ -1,6 +1,5 @@
-import 'package:chat_app/Screens/HomeScreen.dart';
+import 'package:chat_app/Screens/SearchScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -16,7 +15,6 @@ class CreateGroup extends StatefulWidget {
 class _CreateGroupState extends State<CreateGroup> {
   final TextEditingController _groupName = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
 
   void createGroup() async {
@@ -47,7 +45,7 @@ class _CreateGroupState extends State<CreateGroup> {
 
 
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => HomeScreen()), (route) => false);
+        MaterialPageRoute(builder: (_) => SearchScreen()), (route) => false);
   }
 
   @override

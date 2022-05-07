@@ -31,7 +31,7 @@ class _AddMembersINSubGroupState extends State<AddMembersINSubGroup> {
 
   void onSearch() async {
     setState(() {
-      isLoading = true;
+     
     });
     await _firestore
         .collection('groups')
@@ -43,7 +43,7 @@ class _AddMembersINSubGroupState extends State<AddMembersINSubGroup> {
     });
     for (int i = 0; i < membersListadd.length; i++) {
       if (membersListadd[i]["email"] == _search.text.trim()) {
-        setState(() {
+        setState(() { isLoading = false;
           userMap = membersListadd[i];
         });
       }

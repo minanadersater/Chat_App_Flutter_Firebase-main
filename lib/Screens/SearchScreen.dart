@@ -2,19 +2,19 @@
 
 import 'package:chat_app/Authenticate/Methods.dart';
 import 'package:chat_app/Screens/ChatRoom.dart';
-import 'package:chat_app/group_chats/group/group_chat_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
+class SearchScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _SearchScreen createState() => _SearchScreen();
 }
 
-class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+class _SearchScreen extends State<SearchScreen> with WidgetsBindingObserver {
   Map<String, dynamic>? userMap;
-  bool isLoading = false;
+  List chatrooms = [];
+  bool isLoading = false, already_exist = false;
   final TextEditingController _search = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -43,12 +43,54 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
-  String chatRoomIdhome(String user1, String user2) {
-    if (user1[0].toLowerCase().codeUnits[0] >
-        user2.toLowerCase().codeUnits[0]) {
-      return "$user1$user2";
+  Future<void> ontap() async {
+    setState(() {
+      isLoading = true;
+    });
+    await _firestore
+        .collection('users')
+        .doc(_auth.currentUser!.uid)
+        .collection('chatrooms')
+        .get()
+        .then((value) {
+      setState(() {
+        chatrooms = value.docs;
+        isLoading = false;
+      });
+    });
+
+    for (int i = 0; i < chatrooms.length; i++) {
+      if (chatrooms[i]['id'] == userMap!['uid']) {
+        already_exist = true;
+      }
+    }
+    if (already_exist == true) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ChatRoom(
+            reciverId: userMap!['uid'],
+            currentReciverName: userMap!['name'],
+          ),
+        ),
+      );
     } else {
-      return "$user2$user1";
+      await _firestore
+          .collection('users')
+          .doc(_auth.currentUser!.uid)
+          .collection('chatrooms')
+          .doc(userMap!['uid'])
+          .set({
+        "name": userMap!['name'],
+        "id": userMap!['uid'],
+      });
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ChatRoom(
+            reciverId: userMap!['uid'],
+            currentReciverName: userMap!['name'],
+          ),
+        ),
+      );
     }
   }
 
@@ -57,24 +99,26 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       isLoading = true;
     });
     if (_search.text.isNotEmpty) {
-      await _firestore
-          .collection('users')
-          .where("email", isEqualTo: _search.text.trim())
-          .get()
-          .then((value) {
-        setState(() {
-          userMap = value.docs[0].data();
-          isLoading = false;
+      
+        await _firestore
+            .collection('users')
+            .where("email", isEqualTo: _search.text.trim())
+            .get()
+            .then((value) {
+          setState(() {
+            userMap = value.docs[0].data();
+            isLoading = false;
+          });
+          print(userMap);
         });
-        print(userMap);
-      });
+    
     } else {
       isLoading = false;
       return;
     }
   }
 
-  log_Out(BuildContext context) {
+  log_Out() {
     setStatus("Offline");
     logOut(context);
   }
@@ -87,7 +131,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       appBar: AppBar(
         title: Text("Home Screen"),
         actions: [
-          IconButton(icon: Icon(Icons.logout), onPressed: () => log_Out(context))
+          IconButton(
+              icon: Icon(Icons.logout), onPressed: () => log_Out())
         ],
       ),
       body: isLoading
@@ -133,22 +178,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 ),
                 userMap != null
                     ? ListTile(
-                        onTap:
-                            () //=> Navigator.of(context).push(MaterialPageRoute(builder)),
-                            {
-                          String roomId = chatRoomIdhome(
-                              _auth.currentUser!.displayName!,
-                              userMap!['name']);
+                        onTap: ontap,
 
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => ChatRoom(
-                                chatRoomId: roomId,
-                                userMap: userMap!,
-                              ),
-                            ),
-                          );
-                        },
                         //
                         leading: Icon(Icons.account_box, color: Colors.black),
                         title: Text(
@@ -165,14 +196,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     : Container(),
               ],
             ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.group),
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => GroupChatHomeScreen(),
-          ),
-        ),
-      ),
     );
   }
 }

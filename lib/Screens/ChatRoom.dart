@@ -5,30 +5,57 @@ import '../packges/upload_file.dart';
 import '../widgets/massege.dart';
 
 class ChatRoom extends StatelessWidget {
-  final Map<String, dynamic> userMap;
-  final String chatRoomId;
-
-  ChatRoom({required this.chatRoomId, required this.userMap});
-
+  final String reciverId, currentReciverName;
+  ChatRoom({required this.reciverId, required this.currentReciverName});
   final TextEditingController _message = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final bool status = false;
   static String collection = 'chatroom';
-   void onSendMessage() async {
+  void onSendMessage() async {
     if (_message.text.isNotEmpty) {
       Map<String, dynamic> messages = {
         "sendBy": _auth.currentUser!.displayName,
         "message": _message.text.trim(),
         "type": "text",
         "time": FieldValue.serverTimestamp(),
+        "status": status,
+        "docid1": "",
+        "docid2": "",
       };
 
       _message.clear();
-      await _firestore
+      DocumentReference doc1 = await _firestore
           .collection(collection)
-          .doc(chatRoomId)
+          .doc(_auth.currentUser!.uid)
+          .collection('chats')
+          .doc(reciverId)
           .collection('chats')
           .add(messages);
+
+      DocumentReference doc2 = await _firestore
+          .collection(collection)
+          .doc(reciverId)
+          .collection('chats')
+          .doc(_auth.currentUser!.uid)
+          .collection('chats')
+          .add(messages);
+      await _firestore
+          .collection(collection)
+          .doc(_auth.currentUser!.uid)
+          .collection('chats')
+          .doc(reciverId)
+          .collection('chats')
+          .doc(doc1.id)
+          .update({"docid1": doc1.id, "docid2": doc2.id});
+      await _firestore
+          .collection(collection)
+          .doc(reciverId)
+          .collection('chats')
+          .doc(_auth.currentUser!.uid)
+          .collection('chats')
+          .doc(doc2.id)
+          .update({"docid1": doc1.id, "docid2": doc2.id});
     } else {
       print("Enter Some Text");
     }
@@ -40,14 +67,13 @@ class ChatRoom extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: StreamBuilder<DocumentSnapshot>(
-          stream:
-              _firestore.collection("users").doc(userMap['uid']).snapshots(),
+          stream: _firestore.collection("users").doc(reciverId).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.data != null) {
               return Container(
                 child: Column(
                   children: [
-                    Text(userMap['name']),
+                    Text(currentReciverName),
                     Text(
                       snapshot.data!['status'],
                       style: TextStyle(fontSize: 14),
@@ -70,7 +96,9 @@ class ChatRoom extends StatelessWidget {
               child: StreamBuilder<QuerySnapshot>(
                 stream: _firestore
                     .collection('chatroom')
-                    .doc(chatRoomId)
+                    .doc(_auth.currentUser!.uid)
+                    .collection('chats')
+                    .doc(reciverId)
                     .collection('chats')
                     .orderBy("time", descending: false)
                     .snapshots(),
@@ -82,7 +110,15 @@ class ChatRoom extends StatelessWidget {
                       itemBuilder: (context, index) {
                         Map<String, dynamic> map = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
-                        return massege().messages(size, map, context);
+                        return massege().messages(
+                          size: size,
+                          map: map,
+                          context: context,
+                          collection: collection,
+                          reciverid: reciverId,
+                          layer: map["docid2"],
+                          who: 3, docid:  map["docid1"],
+                        );
                       },
                     );
                   } else {
@@ -112,9 +148,10 @@ class ChatRoom extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => UploadFile(
-                                      chatRoom: chatRoomId,
+                                      chatRoom: reciverId,
                                       collection: collection,
-                                      layer: '',
+                                      layer: reciverId,
+                                      who: 3,
                                     ),
                                   )),
                               icon: Icon(Icons.photo),

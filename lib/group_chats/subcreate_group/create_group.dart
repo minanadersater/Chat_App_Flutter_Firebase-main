@@ -1,13 +1,14 @@
-import 'package:chat_app/Screens/HomeScreen.dart';
+import 'package:chat_app/Screens/SearchScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateSubGroup extends StatefulWidget {
   final List<Map<String, dynamic>> membersList;
   final String groupId;
-  const CreateSubGroup({required this.membersList,required this.groupId, Key? key}) : super(key: key);
+  const CreateSubGroup(
+      {required this.membersList, required this.groupId, Key? key})
+      : super(key: key);
 
   @override
   State<CreateSubGroup> createState() => _CreateSubGroupState();
@@ -16,7 +17,6 @@ class CreateSubGroup extends StatefulWidget {
 class _CreateSubGroupState extends State<CreateSubGroup> {
   final TextEditingController _groupName = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
 
   void createGroup() async {
@@ -51,9 +51,8 @@ class _CreateSubGroupState extends State<CreateSubGroup> {
       });
     }
 
-
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => HomeScreen()), (route) => false);
+        MaterialPageRoute(builder: (_) => SearchScreen()), (route) => false);
   }
 
   @override

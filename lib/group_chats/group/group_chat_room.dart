@@ -6,6 +6,7 @@ import 'package:chat_app/group_chats/group/group_info.dart';
 
 import '../../packges/upload_file.dart';
 import '../../widgets/massege.dart';
+
 class GroupChatRoom extends StatelessWidget {
   final String groupChatId, groupName;
 
@@ -16,6 +17,7 @@ class GroupChatRoom extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   static String collection = 'groups';
+  final bool status = false;
   void onSendMessage() async {
     if (_message.text.isNotEmpty) {
       Map<String, dynamic> chatData = {
@@ -23,26 +25,34 @@ class GroupChatRoom extends StatelessWidget {
         "message": _message.text.trim(),
         "type": "text",
         "time": FieldValue.serverTimestamp(),
+        "status": status,
+        "docid": "",
       };
 
       _message.clear();
+
+      DocumentReference doc = await _firestore
+          .collection(collection)
+          .doc(groupChatId)
+          .collection('chats')
+          .add(chatData);
 
       await _firestore
           .collection(collection)
           .doc(groupChatId)
           .collection('chats')
-          .add(chatData);
-    }else{
+          .doc(doc.id)
+          .update({"docid": doc.id});
+    } else {
       print("Enter Some Text");
     }
   }
- 
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      drawer:drawer(groupChatId: groupChatId, groupName: groupName) ,
+      drawer: drawer(groupChatId: groupChatId, groupName: groupName),
       appBar: AppBar(
         title: Text(groupName),
         actions: [
@@ -56,8 +66,7 @@ class GroupChatRoom extends StatelessWidget {
                     ),
                   ),
               icon: Icon(Icons.more_vert)),
-              ],
-        
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -79,7 +88,16 @@ class GroupChatRoom extends StatelessWidget {
                       itemBuilder: (context, index) {
                         Map<String, dynamic> map = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
-                        return massege().messages(size, map, context);
+                        return massege().messages(
+                          size: size,
+                          map: map,
+                          context: context,
+                          collection: collection,
+                          reciverid: groupChatId,
+                          layer: '',
+                          who: 1, docid: map["docid"],
+                        );
+                        
                       },
                     );
                   } else {
@@ -105,11 +123,15 @@ class GroupChatRoom extends StatelessWidget {
                         controller: _message,
                         decoration: InputDecoration(
                             suffixIcon: IconButton(
-                              onPressed: ()  => Navigator.push(
+                              onPressed: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        UploadFile(chatRoom: groupChatId,collection:collection, layer: '',),
+                                    builder: (context) => UploadFile(
+                                      chatRoom: groupChatId,
+                                      collection: collection,
+                                      layer: '',
+                                      who: 1,
+                                    ),
                                   )),
                               icon: Icon(Icons.file_upload_outlined),
                             ),
@@ -128,9 +150,6 @@ class GroupChatRoom extends StatelessWidget {
           ],
         ),
       ),
-      
     );
   }
-
-
 }

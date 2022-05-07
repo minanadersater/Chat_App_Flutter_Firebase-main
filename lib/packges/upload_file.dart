@@ -8,11 +8,17 @@ import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
 class UploadFile extends StatefulWidget {
-  const UploadFile({Key? key, required this.chatRoom, required this.collection,required this.layer,})
-      : super(key: key);
+  const UploadFile({
+    Key? key,
+    required this.chatRoom,
+    required this.collection,
+    required this.layer,
+    required this.who,
+  }) : super(key: key);
   final String chatRoom;
   final String collection;
   final String layer;
+  final int who;
 
   @override
   _UploadFileState createState() => _UploadFileState();
@@ -21,7 +27,6 @@ class UploadFile extends StatefulWidget {
 class _UploadFileState extends State<UploadFile> {
   UploadTask? task;
   File? file;
-  
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -88,54 +93,120 @@ class _UploadFileState extends State<UploadFile> {
 
     final snapshot = await task!.whenComplete(() {});
     final urlDownload = await snapshot.ref.getDownloadURL();
-
-  
+    final bool status = false;
     String fileNameid = Uuid().v1();
-    if(widget.layer!=''){
-       await _firestore
-          .collection(widget.collection)
-          .doc(widget.chatRoom)
-          .collection('sub_group')
-          .doc(widget.layer)
-          .collection('chats')
-           .doc(fileNameid)
-          .set({
-        "sendBy": _auth.currentUser!.displayName,
-        "message": "",
-        "filename": fileName,
-        "type": "files",
-        "time": FieldValue.serverTimestamp(),
-      });
-       await _firestore
-          .collection(widget.collection)
-          .doc(widget.chatRoom)
-          .collection('sub_group')
-          .doc(widget.layer)
-          .collection('chats')
-           .doc(fileNameid)
-          .update({"message": urlDownload});
-    }else{
-      await _firestore
-        .collection(widget.collection)
-        .doc(widget.chatRoom)
-        .collection('chats')
-        .doc(fileNameid)
-        .set({
-      "sendBy": _auth.currentUser!.displayName,
-      "message": "",
-      "filename": fileName,
-      "type": "files",
-      "time": FieldValue.serverTimestamp(),
-    });
-    await _firestore
-        .collection(widget.collection)
-        .doc(widget.chatRoom)
-        .collection('chats')
-        .doc(fileNameid)
-        .update({"message": urlDownload});
-    }
-    
+    switch (widget.who) {
+      case 1:
+        await _firestore
+            .collection(widget.collection)
+            .doc(widget.chatRoom)
+            .collection('chats')
+            .doc(fileNameid)
+            .set({
+          "sendBy": _auth.currentUser!.displayName,
+          "message": "",
+          "filename": fileName,
+          "type": "files",
+          "time": FieldValue.serverTimestamp(),
+          "status": status,
+          "docid": "",
+        });
+        await _firestore
+            .collection(widget.collection)
+            .doc(widget.chatRoom)
+            .collection('chats')
+            .doc(fileNameid)
+            .update({"message": urlDownload, "docid": fileNameid});
+        break;
 
+      case 2:
+        await _firestore
+            .collection(widget.collection)
+            .doc(widget.chatRoom)
+            .collection('sub_group')
+            .doc(widget.layer)
+            .collection('chats')
+            .doc(fileNameid)
+            .set({
+          "sendBy": _auth.currentUser!.displayName,
+          "message": "",
+          "filename": fileName,
+          "type": "files",
+          "time": FieldValue.serverTimestamp(),
+          "status": status,
+          "docid": "",
+        });
+        await _firestore
+            .collection(widget.collection)
+            .doc(widget.chatRoom)
+            .collection('sub_group')
+            .doc(widget.layer)
+            .collection('chats')
+            .doc(fileNameid)
+            .update({"message": urlDownload, "docid": fileNameid});
+        break;
+      case 3:
+        await _firestore
+            .collection(widget.collection)
+            .doc(_auth.currentUser!.uid)
+            .collection('chats')
+            .doc(widget.layer)
+            .collection('chats')
+            .doc(fileNameid)
+            .set({
+          "sendBy": _auth.currentUser!.displayName,
+          "message": "",
+          "filename": fileName,
+          "type": "files",
+          "time": FieldValue.serverTimestamp(),
+          "status": status,
+          "docid1": "",
+          "docid2": "",
+        });
+         await _firestore
+            .collection(widget.collection)
+            .doc(widget.layer)
+            .collection('chats')
+            .doc(_auth.currentUser!.uid)
+            .collection('chats')
+            .doc(fileNameid)
+            .set({
+          "sendBy": _auth.currentUser!.displayName,
+          "message": "",
+          "filename": fileName,
+          "type": "files",
+          "time": FieldValue.serverTimestamp(),
+          "status": status,
+          "docid1": "",
+          "docid2": "",
+        });
+
+        await _firestore
+            .collection(widget.collection)
+            .doc(_auth.currentUser!.uid)
+            .collection('chats')
+            .doc(widget.layer)
+            .collection('chats')
+            .doc(fileNameid)
+            .update({"message": urlDownload, "docid1": fileNameid,
+          "docid2": fileNameid,
+        });
+
+
+        await _firestore
+            .collection(widget.collection)
+            .doc(widget.layer)
+            .collection('chats')
+            .doc(_auth.currentUser!.uid)
+            .collection('chats')
+            .doc(fileNameid)
+            .update({
+          "message": urlDownload,
+          "docid1": fileNameid,
+          "docid2": fileNameid,
+        });
+        break;
+    }
   }
 
   Widget buildUploadStatus(UploadTask task) => StreamBuilder<TaskSnapshot>(
@@ -159,9 +230,8 @@ class _UploadFileState extends State<UploadFile> {
 
 class FirebaseApi {
   static UploadTask? uploadFile(String destination, File file) {
-      final ref = FirebaseStorage.instance.ref(destination);
-      return ref.putFile(file);
-   
+    final ref = FirebaseStorage.instance.ref(destination);
+    return ref.putFile(file);
   }
 }
 

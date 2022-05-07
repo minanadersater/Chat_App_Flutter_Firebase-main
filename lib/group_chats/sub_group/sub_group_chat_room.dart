@@ -19,6 +19,7 @@ class SubGroupChatRoom extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   static String collection = 'groups';
+  final bool status = false;
   void onSendMessage() async {
     if (_message.text.isNotEmpty) {
       Map<String, dynamic> chatData = {
@@ -26,9 +27,19 @@ class SubGroupChatRoom extends StatelessWidget {
         "message": _message.text.trim(),
         "type": "text",
         "time": FieldValue.serverTimestamp(),
+        "status": status,
+        "docid": "",
       };
 
       _message.clear();
+
+      DocumentReference doc = await _firestore
+          .collection(collection)
+          .doc(groupChatId)
+          .collection('sub_group')
+          .doc(subgroupChatId)
+          .collection('chats')
+          .add(chatData);
 
       await _firestore
           .collection(collection)
@@ -36,7 +47,8 @@ class SubGroupChatRoom extends StatelessWidget {
           .collection('sub_group')
           .doc(subgroupChatId)
           .collection('chats')
-          .add(chatData);
+          .doc(doc.id)
+          .update({"docid": doc.id});
     } else {
       print("Enter Some Text");
     }
@@ -84,7 +96,16 @@ class SubGroupChatRoom extends StatelessWidget {
                       itemBuilder: (context, index) {
                         Map<String, dynamic> map = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
-                        return massege().messages(size, map, context);
+                        return massege().messages(
+                          size: size,
+                          map: map,
+                          context: context,
+                          collection: collection,
+                          reciverid: groupChatId,
+                          layer: subgroupChatId,
+                          who: 2, docid: map["docid"],
+                        );
+                        
                       },
                     );
                   } else {
@@ -117,6 +138,7 @@ class SubGroupChatRoom extends StatelessWidget {
                                       chatRoom: groupChatId,
                                       collection: collection,
                                       layer: subgroupChatId,
+                                      who: 2,
                                     ),
                                   )),
                               icon: Icon(Icons.file_upload_outlined),

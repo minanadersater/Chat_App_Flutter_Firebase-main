@@ -1,4 +1,4 @@
-import 'package:chat_app/Screens/HomeScreen.dart';
+import 'package:chat_app/Screens/SearchScreen.dart';
 import 'package:chat_app/group_chats/sub_group/add_members.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -127,7 +127,7 @@ class _SubGroupInfoState extends State<SubGroupInfo> {
           .delete();
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => HomeScreen()),
+        MaterialPageRoute(builder: (_) => SearchScreen()),
         (route) => false,
       );
     }
