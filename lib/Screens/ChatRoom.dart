@@ -117,7 +117,7 @@ class ChatRoom extends StatelessWidget {
                           collection: collection,
                           reciverid: reciverId,
                           layer: map["docid2"],
-                          who: 3, docid:  map["docid1"],
+                          who: 3, docid: map["docid1"],
                         );
                       },
                     );

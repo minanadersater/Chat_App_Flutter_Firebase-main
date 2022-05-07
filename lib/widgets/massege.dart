@@ -52,34 +52,38 @@ class massege {
                 : Alignment.centerLeft,
             child: InkWell(
               onTap: () {
-                showModalBottomSheet<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      height: 100,
-                      color: Colors.white,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const Text('Delete This Massege'),
-                            ElevatedButton(
-                              child: const Text('Delete'),
-                              onPressed: () => Up().update(
-                                id: docid,
-                                collection: collection,
-                                receiverid: reciverid,
-                                layer: layer,
-                                who: who,
-                              ),
-                            )
-                          ],
+                if (map['sendBy'] == _auth.currentUser!.displayName) {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        height: 100,
+                        color: Colors.white,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              const Text('Delete This Massege'),
+                              ElevatedButton(
+                                  child: const Text('Delete'),
+                                  onPressed: () {
+                                    Up().update(
+                                      id: docid,
+                                      collection: collection,
+                                      receiverid: reciverid,
+                                      layer: layer,
+                                      who: who,
+                                    );
+                                    Navigator.pop(context);
+                                  })
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
+                      );
+                    },
+                  );
+                }
               },
               child: Container(
                   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 14),
@@ -128,34 +132,38 @@ class massege {
               ),
               child: InkWell(
                 onTap: () {
-                  showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Container(
-                        height: 100,
-                        color: Colors.white,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              const Text('Delete This Massege'),
-                              ElevatedButton(
-                                child: const Text('Delete'),
-                                onPressed: () => Up().update(
-                                  id: docid,
-                                  collection: collection,
-                                  receiverid: reciverid,
-                                  layer: layer,
-                                  who: who,
-                                ),
-                              )
-                            ],
+                  if (map['sendBy'] == _auth.currentUser!.displayName) {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          height: 100,
+                          color: Colors.white,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                const Text('Delete This Massege'),
+                                ElevatedButton(
+                                    child: const Text('Delete'),
+                                    onPressed: () {
+                                      Up().update(
+                                        id: docid,
+                                        collection: collection,
+                                        receiverid: reciverid,
+                                        layer: layer,
+                                        who: who,
+                                      );
+                                      Navigator.pop(context);
+                                    })
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
+                        );
+                      },
+                    );
+                  }
                 },
                 child: Column(
                   children: [
