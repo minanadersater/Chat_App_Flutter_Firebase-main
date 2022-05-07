@@ -26,7 +26,7 @@ class ChatListScreenState extends State<ChatListScreen>
   void initState() {
     super.initState();
     getAvailableGroups();
-     WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     setStatus("Online");
   }
 
@@ -63,36 +63,36 @@ class ChatListScreenState extends State<ChatListScreen>
     });
   }
 
-log_Out() {
+  log_Out() {
     setStatus("Offline");
     logOut(context);
   }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Chats"),
-          actions: [
-            IconButton(
-                onPressed: () => Navigator.of(context).push(
+      appBar: AppBar(
+        title: Text("Chats"),
+        actions: [
+          IconButton(
+              onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => SearchScreen(),
                     ),
                   ),
-                icon: Icon(Icons.search)),
-               IconButton(
-                onPressed: () =>Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => GroupChatHomeScreen(),
-              ),
-            ),
-                icon: Icon(Icons.group)),
-                 IconButton(
-              icon: Icon(Icons.logout), onPressed: () => log_Out()),
-          ],
-        ),
-        body: SingleChildScrollView(
+              icon: Icon(Icons.search)),
+          IconButton(
+              onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => GroupChatHomeScreen(),
+                    ),
+                  ),
+              icon: Icon(Icons.group)),
+          IconButton(icon: Icon(Icons.logout), onPressed: () => log_Out()),
+        ],
+      ),
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Container(
@@ -108,24 +108,22 @@ log_Out() {
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.data != null) {
                     return ListView.builder(
-                  itemCount: chatrooms.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => ChatRoom(
-                            reciverId: chatrooms[index]['id'],
-                            currentReciverName: chatrooms[index]['name'],
+                      itemCount: chatrooms.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => ChatRoom(
+                                reciverId: chatrooms[index]['id'],
+                                currentReciverName: chatrooms[index]['name'],
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      leading: Icon(Icons.person),
-                      title: Text(chatrooms[index]['name']),
+                          leading: Icon(Icons.person),
+                          title: Text(chatrooms[index]['name']),
+                        );
+                      },
                     );
-                  },
-                );
-                
-                    
                   } else {
                     return Container();
                   }
@@ -136,8 +134,7 @@ log_Out() {
                 height: size.height,
                 width: size.width,
                 alignment: Alignment.center,
-                child: CircularProgressIndicator()
-            ),
+                child: CircularProgressIndicator()),
           ],
         ),
       ),
