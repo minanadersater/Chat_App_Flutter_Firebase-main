@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/group_chats/group/group_info.dart';
-
 import '../../packges/upload_file.dart';
 import '../../widgets/massege.dart';
 
@@ -52,7 +51,7 @@ class GroupChatRoom extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      drawer: drawer(groupChatId: groupChatId, groupName: groupName),
+      drawer: MyDrawer(groupChatId: groupChatId, groupName: groupName),
       appBar: AppBar(
         title: Text(groupName),
         actions: [
@@ -88,7 +87,7 @@ class GroupChatRoom extends StatelessWidget {
                       itemBuilder: (context, index) {
                         Map<String, dynamic> map = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
-                        return massege().messages(
+                        return Massege().messages(
                           size: size,
                           map: map,
                           context: context,

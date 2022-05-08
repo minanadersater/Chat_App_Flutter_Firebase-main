@@ -110,7 +110,7 @@ class ChatRoom extends StatelessWidget {
                       itemBuilder: (context, index) {
                         Map<String, dynamic> map = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
-                        return massege().messages(
+                        return Massege().messages(
                           size: size,
                           map: map,
                           context: context,

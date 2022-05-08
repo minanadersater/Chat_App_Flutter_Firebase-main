@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:chat_app/Authenticate/Methods.dart';
 import 'package:chat_app/Screens/ChatRoom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,7 +12,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreen extends State<SearchScreen> with WidgetsBindingObserver {
   Map<String, dynamic>? userMap;
   List chatrooms = [];
-  bool isLoading = false, already_exist = false;
+  bool isLoading = false, alreadyexist = false;
   final TextEditingController _search = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -61,10 +59,11 @@ class _SearchScreen extends State<SearchScreen> with WidgetsBindingObserver {
 
     for (int i = 0; i < chatrooms.length; i++) {
       if (chatrooms[i]['id'] == userMap!['uid']) {
-        already_exist = true;
+        alreadyexist = true;
       }
     }
-    if (already_exist == true) {
+    if (alreadyexist == true) {
+      Navigator.pop(context);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => ChatRoom(
@@ -83,6 +82,7 @@ class _SearchScreen extends State<SearchScreen> with WidgetsBindingObserver {
         "name": userMap!['name'],
         "id": userMap!['uid'],
       });
+      Navigator.pop(context);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => ChatRoom(
@@ -99,26 +99,24 @@ class _SearchScreen extends State<SearchScreen> with WidgetsBindingObserver {
       isLoading = true;
     });
     if (_search.text.isNotEmpty) {
-      
-        await _firestore
-            .collection('users')
-            .where("email", isEqualTo: _search.text.trim())
-            .get()
-            .then((value) {
-          setState(() {
-            userMap = value.docs[0].data();
-            isLoading = false;
-          });
-          print(userMap);
+      await _firestore
+          .collection('users')
+          .where("email", isEqualTo: _search.text.trim())
+          .get()
+          .then((value) {
+        setState(() {
+          userMap = value.docs[0].data();
+          isLoading = false;
         });
-    
+        print(userMap);
+      });
     } else {
       isLoading = false;
       return;
     }
   }
 
-  log_Out() {
+  logout() {
     setStatus("Offline");
     logOut(context);
   }
@@ -131,8 +129,7 @@ class _SearchScreen extends State<SearchScreen> with WidgetsBindingObserver {
       appBar: AppBar(
         title: Text("Home Screen"),
         actions: [
-          IconButton(
-              icon: Icon(Icons.logout), onPressed: () => log_Out())
+          IconButton(icon: Icon(Icons.logout), onPressed: () => logout())
         ],
       ),
       body: isLoading

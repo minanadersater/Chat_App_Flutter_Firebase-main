@@ -3,7 +3,6 @@ import 'package:chat_app/Screens/SearchScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../Authenticate/Methods.dart';
 import '../group_chats/group/group_chat_screen.dart';
 
@@ -20,13 +19,12 @@ class ChatListScreenState extends State<ChatListScreen>
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = true;
 
-  List chatrooms = [];
+
 
   @override
   void initState() {
     super.initState();
-    getAvailableGroups();
-    WidgetsBinding.instance!.addObserver(this);
+     WidgetsBinding.instance!.addObserver(this);
     setStatus("Online");
   }
 
@@ -47,23 +45,7 @@ class ChatListScreenState extends State<ChatListScreen>
     }
   }
 
-  void getAvailableGroups() async {
-    String uid = _auth.currentUser!.uid;
-
-    await _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('chatrooms')
-        .get()
-        .then((value) {
-      setState(() {
-        chatrooms = value.docs;
-        isLoading = false;
-      });
-    });
-  }
-
-  log_Out() {
+  logout() {
     setStatus("Offline");
     logOut(context);
   }
@@ -89,7 +71,7 @@ class ChatListScreenState extends State<ChatListScreen>
                     ),
                   ),
               icon: Icon(Icons.group)),
-          IconButton(icon: Icon(Icons.logout), onPressed: () => log_Out()),
+          IconButton(icon: Icon(Icons.logout), onPressed: () => logout()),
         ],
       ),
       body: SingleChildScrollView(
@@ -108,19 +90,21 @@ class ChatListScreenState extends State<ChatListScreen>
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.data != null) {
                     return ListView.builder(
-                      itemCount: chatrooms.length,
+                      itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
+                          Map<String, dynamic> map = snapshot.data!.docs[index]
+                            .data() as Map<String, dynamic>;
                         return ListTile(
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => ChatRoom(
-                                reciverId: chatrooms[index]['id'],
-                                currentReciverName: chatrooms[index]['name'],
+                                reciverId: map['id'],
+                                currentReciverName: map['name'],
                               ),
                             ),
                           ),
                           leading: Icon(Icons.person),
-                          title: Text(chatrooms[index]['name']),
+                          title: Text(map['name']),
                         );
                       },
                     );

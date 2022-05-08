@@ -10,7 +10,8 @@ class Up {
       required String collection,
       required String receiverid,
       required String layer,
-      required int who}) async {
+      required int who,
+      required bool status,}) async {
     switch (who) {
       case 1:
         await _firestore
@@ -19,7 +20,7 @@ class Up {
             .collection('chats')
             .doc(id)
             .update({
-          "status": true,
+          "status": status,
         });
         break;
       case 2:
@@ -31,7 +32,7 @@ class Up {
             .collection('chats')
             .doc(id)
             .update({
-          "status": true,
+          "status": status,
         });
         break;
       case 3:
@@ -43,7 +44,7 @@ class Up {
             .collection('chats')
             .doc(id)
             .update({
-          "status": true,
+          "status": status,
         });
         await _firestore
             .collection(collection)
@@ -53,7 +54,7 @@ class Up {
             .collection('chats')
             .doc(layer)
             .update({
-          "status": true,
+          "status": status,
         });
         break;
     }

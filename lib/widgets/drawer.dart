@@ -1,13 +1,11 @@
-// ignore_for_file: camel_case_types
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../group_chats/subcreate_group/add_members.dart';
 import '../group_chats/sub_group/sub_group_chat_room.dart';
 
-class drawer extends StatefulWidget {
-  const drawer({
+class MyDrawer extends StatefulWidget {
+  const MyDrawer({
     Key? key,
     required this.groupChatId,
     required this.groupName,
@@ -15,10 +13,10 @@ class drawer extends StatefulWidget {
   final String groupChatId, groupName;
 
   @override
-  State<drawer> createState() => _drawerState();
+  State<MyDrawer> createState() => MyDrawerState();
 }
 
-class _drawerState extends State<drawer> {
+class MyDrawerState extends State<MyDrawer> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = true;
