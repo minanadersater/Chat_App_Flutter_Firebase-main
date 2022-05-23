@@ -67,86 +67,91 @@ class GroupChatRoom extends StatelessWidget {
               icon: Icon(Icons.more_vert)),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: size.height / 1.27,
-              width: size.width,
-              child: StreamBuilder<QuerySnapshot>(
-                stream: _firestore
-                    .collection('groups')
-                    .doc(groupChatId)
-                    .collection('chats')
-                    .orderBy('time')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        Map<String, dynamic> map = snapshot.data!.docs[index]
-                            .data() as Map<String, dynamic>;
-                        return Massege().messages(
-                          size: size,
-                          map: map,
-                          context: context,
-                          collection: collection,
-                          reciverid: groupChatId,
-                          layer: '',
-                          who: 1, docid: map["docid"],
-                        );
-                        
-                      },
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
-            ),
-            Container(
-              height: size.height / 10,
-              width: size.width,
-              alignment: Alignment.center,
-              child: Container(
-                height: size.height / 12,
-                width: size.width / 1.1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: size.height / 17,
-                      width: size.width / 1.3,
-                      child: TextField(
-                        controller: _message,
-                        decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => UploadFile(
-                                      chatRoom: groupChatId,
-                                      collection: collection,
-                                      layer: '',
-                                      who: 1,
-                                    ),
-                                  )),
-                              icon: Icon(Icons.file_upload_outlined),
-                            ),
-                            hintText: "Send Message",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            )),
-                      ),
-                    ),
-                    IconButton(
-                        icon: Icon(Icons.send), onPressed: onSendMessage),
-                  ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: size.height / 1.27,
+                width: size.width,
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: _firestore
+                      .collection('groups')
+                      .doc(groupChatId)
+                      .collection('chats')
+                      .orderBy('time')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          Map<String, dynamic> map = snapshot.data!.docs[index]
+                              .data() as Map<String, dynamic>;
+                          return Massege().messages(
+                            size: size,
+                            map: map,
+                            context: context,
+                            collection: collection,
+                            reciverid: groupChatId,
+                            layer: '',
+                            who: 1, docid: map["docid"],
+                          );
+                          
+                        },
+                      );
+                    } else {
+                      return Container(
+                        height: size.height / 10,
+                        width: size.width,
+                      );
+                    }
+                  },
                 ),
               ),
-            ),
-          ],
+              Container(
+                height: size.height / 10,
+                width: size.width,
+                alignment: Alignment.center,
+                child: Container(
+                  height: size.height / 12,
+                  width: size.width / 1.1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: size.height / 17,
+                        width: size.width / 1.3,
+                        child: TextField(
+                          controller: _message,
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UploadFile(
+                                        chatRoom: groupChatId,
+                                        collection: collection,
+                                        layer: '',
+                                        who: 1,
+                                      ),
+                                    )),
+                                icon: Icon(Icons.file_upload_outlined),
+                              ),
+                              hintText: "Send Message",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              )),
+                        ),
+                      ),
+                      IconButton(
+                          icon: Icon(Icons.send), onPressed: onSendMessage),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

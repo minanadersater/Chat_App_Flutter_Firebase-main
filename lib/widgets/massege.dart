@@ -5,7 +5,7 @@ import 'delete_massege.dart';
 
 class Massege {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final TextSelectionControls _controls = MaterialTextSelectionControls();
   Widget messages(
       {required Size size,
       required Map<String, dynamic> map,
@@ -38,16 +38,15 @@ class Massege {
                                 ElevatedButton(
                                     child: const Text('Recover'),
                                     onPressed: () {
-                                       Up().update(
-                                          id: docid,
-                                          collection: collection,
-                                          receiverid: reciverid,
-                                          layer: layer,
-                                          who: who,
-                                          status: false,
-                                        );
-                                        Navigator.pop(context);
-                                      
+                                      Up().update(
+                                        id: docid,
+                                        collection: collection,
+                                        receiverid: reciverid,
+                                        layer: layer,
+                                        who: who,
+                                        status: false,
+                                      );
+                                      Navigator.pop(context);
                                     })
                               ],
                             ),
@@ -64,27 +63,25 @@ class Massege {
               alignment: map['sendBy'] == _auth.currentUser!.displayName
                   ? Alignment.centerRight
                   : Alignment.centerLeft,
-              
-                child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 14),
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.black,
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          "massege was deleted",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
+              child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.black,
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        "massege was deleted",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
                         ),
-                      ],
-                    )),
-              
+                      ),
+                    ],
+                  )),
             ),
           );
         } else if (map['type'] == "text" && map["status"] == false) {
@@ -133,39 +130,68 @@ class Massege {
               alignment: map['sendBy'] == _auth.currentUser!.displayName
                   ? Alignment.centerRight
                   : Alignment.centerLeft,
-              
-               
-                child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 14),
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.blue,
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          map['sendBy'],
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(
-                          height: size.height / 200,
-                        ),
-                        SelectableText(
-                          map['message'],
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    )),
-              
+              child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.blue,
+                  ),
+                  child: who != 3
+                      ? map['sendBy'] != _auth.currentUser!.displayName
+                          ? Column(
+                              children: [
+                                Text(
+                                  map['sendBy'],
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: size.height / 200,
+                                ),
+                                SelectableText(
+                                  map['message'],
+                                  showCursor: true,
+                                  selectionControls: _controls,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                SelectableText(
+                                  map['message'],
+                                  showCursor: true,
+                                  selectionControls: _controls,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            )
+                      : Column(
+                          children: [
+                            SelectableText(
+                              map['message'],
+                              showCursor: true,
+                              selectionControls: _controls,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        )),
             ),
           );
         } else if (map['type'] == "files" && map["status"] == false) {
@@ -221,47 +247,106 @@ class Massege {
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.blue,
                 ),
-                
-                  child: Column(
-                    children: [
-                      Text(
-                        map['sendBy'],
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height / 200,
-                      ),
-                      Container(
-                        width: 200,
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 150,
-                              child: Text(
-                                map['filename'],
+                child: who != 3
+                    ? map['sendBy'] != _auth.currentUser!.displayName
+                        ? Column(
+                            children: [
+                              Text(
+                                map['sendBy'],
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white,
                                 ),
                               ),
+                              SizedBox(
+                                height: size.height / 200,
+                              ),
+                              Container(
+                                width: 200,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 150,
+                                      child: Text(
+                                        map['filename'],
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          downloadFile(
+                                              map['message'], map['filename']);
+                                        },
+                                        icon: const Icon(Icons.download,
+                                            color: Colors.black))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : Column(
+                            children: [
+                              Container(
+                                width: 200,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 150,
+                                      child: Text(
+                                        map['filename'],
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          downloadFile(
+                                              map['message'], map['filename']);
+                                        },
+                                        icon: const Icon(Icons.download,
+                                            color: Colors.black))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                    : Column(
+                        children: [
+                          Container(
+                            width: 200,
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 150,
+                                  child: Text(
+                                    map['filename'],
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      downloadFile(
+                                          map['message'], map['filename']);
+                                    },
+                                    icon: const Icon(Icons.download,
+                                        color: Colors.black))
+                              ],
                             ),
-                            IconButton(
-                                onPressed: () {
-                                  downloadFile(map['message'], map['filename']);
-                                },
-                                icon: const Icon(Icons.download,
-                                    color: Colors.black))
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                
               ),
             ),
           );
