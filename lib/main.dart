@@ -1,4 +1,5 @@
 import 'package:chat_app/Authenticate/Autheticate.dart';
+import 'package:chat_app/Authenticate/LoginScree.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/Screens/ChatListScreen.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
           // When navigating to the "/" route, build the FirstScreen widget.
           '/': (context) => Authenticate(),
           '/Home': (context) => ChatListScreen(),
+         '/login': (context) => LoginScreen(), 
         },
       );
 }
