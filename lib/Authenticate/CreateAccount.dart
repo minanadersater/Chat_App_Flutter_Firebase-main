@@ -1,7 +1,8 @@
 import 'package:chat_app/Authenticate/Methods.dart';
+import 'package:chat_app/pages/home.dart';
 import 'package:flutter/material.dart';
 
-import '../Screens/HomeScreen.dart';
+import 'package:chat_app/pages/home.dart';
 
 class CreateAccount extends StatefulWidget {
   @override

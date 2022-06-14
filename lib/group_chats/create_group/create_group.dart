@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import 'package:chat_app/Screens/HomeScreen.dart';
+=======
+>>>>>>> Stashed changes
+import 'package:chat_app/pages/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

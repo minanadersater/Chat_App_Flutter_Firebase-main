@@ -49,14 +49,30 @@ packages:
       name: cloud_firestore_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "5.4.13"
+=======
+    version: "5.5.0"
+>>>>>>> Stashed changes
+=======
+    version: "5.5.0"
+>>>>>>> Stashed changes
   cloud_firestore_web:
     dependency: transitive
     description:
       name: cloud_firestore_web
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "2.6.8"
+=======
+    version: "2.6.9"
+>>>>>>> Stashed changes
+=======
+    version: "2.6.9"
+>>>>>>> Stashed changes
   collection:
     dependency: transitive
     description:
@@ -98,21 +114,45 @@ packages:
       name: firebase_auth
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "3.3.7"
+=======
+    version: "3.3.8"
+>>>>>>> Stashed changes
+=======
+    version: "3.3.8"
+>>>>>>> Stashed changes
   firebase_auth_platform_interface:
     dependency: transitive
     description:
       name: firebase_auth_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "6.1.11"
+=======
+    version: "6.2.0"
+>>>>>>> Stashed changes
+=======
+    version: "6.2.0"
+>>>>>>> Stashed changes
   firebase_auth_web:
     dependency: transitive
     description:
       name: firebase_auth_web
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "3.3.7"
+=======
+    version: "3.3.8"
+>>>>>>> Stashed changes
+=======
+    version: "3.3.8"
+>>>>>>> Stashed changes
   firebase_core:
     dependency: "direct main"
     description:
@@ -133,28 +173,60 @@ packages:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "1.5.4"
+=======
+    version: "1.6.0"
+>>>>>>> Stashed changes
+=======
+    version: "1.6.0"
+>>>>>>> Stashed changes
   firebase_storage:
     dependency: "direct main"
     description:
       name: firebase_storage
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "10.2.7"
+=======
+    version: "10.2.8"
+>>>>>>> Stashed changes
+=======
+    version: "10.2.8"
+>>>>>>> Stashed changes
   firebase_storage_platform_interface:
     dependency: transitive
     description:
       name: firebase_storage_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "4.0.14"
+=======
+    version: "4.1.0"
+>>>>>>> Stashed changes
+=======
+    version: "4.1.0"
+>>>>>>> Stashed changes
   firebase_storage_web:
     dependency: transitive
     description:
       name: firebase_storage_web
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "3.2.8"
+=======
+    version: "3.2.9"
+>>>>>>> Stashed changes
+=======
+    version: "3.2.9"
+>>>>>>> Stashed changes
   flutter:
     dependency: "direct main"
     description: flutter
@@ -330,5 +402,13 @@ packages:
     source: hosted
     version: "2.1.1"
 sdks:
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
   dart: ">=2.14.0 <3.0.0"
   flutter: ">=2.5.0"
+=======
+=======
+>>>>>>> Stashed changes
+  dart: ">=2.15.0 <3.0.0"
+  flutter: ">=2.8.0"
+>>>>>>> Stashed changes
