@@ -1,5 +1,6 @@
 import 'package:chat_app/Authenticate/Methods.dart';
 import 'package:flutter/material.dart';
+
 class CreateAccount extends StatefulWidget {
   @override
   _CreateAccountState createState() => _CreateAccountState();
@@ -125,10 +126,15 @@ class _CreateAccountState extends State<CreateAccount> {
               setState(() {
                 isLoading = false;
               });
-             Navigator.popAndPushNamed(context, '/');
+              Navigator.popAndPushNamed(context, '/');
             } else {
               setState(() {
                 isLoading = false;
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content:
+                      Text("The Email or Password You Enterd Is Already Used"),
+                  duration: const Duration(seconds: 3),
+                ));
                 _email.clear();
                 _password.clear();
               });

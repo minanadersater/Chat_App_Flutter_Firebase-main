@@ -13,6 +13,7 @@ class GroupChatRoom extends StatelessWidget {
       : super(key: key);
 
   final TextEditingController _message = TextEditingController();
+  final ScrollController scrollController = new ScrollController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   static String collection = 'groups';
@@ -84,12 +85,18 @@ class GroupChatRoom extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
+                        controller: scrollController,
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
                           Map<String, dynamic> map = snapshot.data!.docs[index]
                               .data() as Map<String, dynamic>;
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (scrollController.hasClients) {
+                              scrollController.jumpTo(
+                                  scrollController.position.maxScrollExtent);
+                            }
+                          });
                           return Massege().messages(
-                            size: size,
                             map: map,
                             context: context,
                             collection: collection,

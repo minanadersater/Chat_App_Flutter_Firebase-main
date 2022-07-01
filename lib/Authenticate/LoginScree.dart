@@ -118,6 +118,11 @@ class _LoginScreenState extends State<LoginScreen> {
             } else {
             setState(() {
                 isLoading = false;
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content:
+                      Text("The Email or Password You Enterd is Incorrect "),
+                  duration: const Duration(seconds: 3),
+                ));
                 _password.clear();
               });
             }

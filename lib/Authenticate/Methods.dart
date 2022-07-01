@@ -37,8 +37,6 @@ Future<User?> logIn(String email, String password) async {
   try {
     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
-
-    print("Login Sucessfull");
     _firestore
         .collection('users')
         .doc(_auth.currentUser!.uid)
@@ -47,7 +45,6 @@ Future<User?> logIn(String email, String password) async {
 
     return userCredential.user;
   } catch (e) {
-    print(e);
     return null;
   }
 }

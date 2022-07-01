@@ -24,7 +24,7 @@ class ChatListScreenState extends State<ChatListScreen>
   @override
   void initState() {
     super.initState();
-     WidgetsBinding.instance!.addObserver(this);
+     WidgetsBinding.instance.addObserver(this);
     setStatus("Online");
   }
 

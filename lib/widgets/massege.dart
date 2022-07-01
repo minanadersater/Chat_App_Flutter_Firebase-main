@@ -1,13 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:selectable_autolink_text/selectable_autolink_text.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import '../packges/download.dart';
-import 'delete_massege.dart';
+import 'bottomsheet.dart';
 
 class Massege {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextSelectionControls _controls = MaterialTextSelectionControls();
   Widget messages(
-      {required Size size,
+      {
       required Map<String, dynamic> map,
       required BuildContext context,
       required String collection,
@@ -15,46 +17,21 @@ class Massege {
       required String layer,
       required int who,
       required String docid}) {
+    final  size = MediaQuery.of(context).size;
     return Builder(
       builder: (_) {
         if (map["status"] == true) {
           return InkWell(
             onLongPress: () {
               if (map['sendBy'] == _auth.currentUser!.displayName) {
-                showModalBottomSheet<void>(
+                bottomsheet(
                   context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      height: 70,
-                      color: Colors.white,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                    child: const Text('Recover'),
-                                    onPressed: () {
-                                      Up().update(
-                                        id: docid,
-                                        collection: collection,
-                                        receiverid: reciverid,
-                                        layer: layer,
-                                        who: who,
-                                        status: false,
-                                      );
-                                      Navigator.pop(context);
-                                    })
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                  docid: docid,
+                  collection: collection,
+                  reciverid: reciverid,
+                  layer: layer,
+                  who: who,
+                  status: false,
                 );
               }
             },
@@ -88,45 +65,18 @@ class Massege {
           return InkWell(
             onLongPress: () {
               if (map['sendBy'] == _auth.currentUser!.displayName) {
-                showModalBottomSheet<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      height: 70,
-                      color: Colors.white,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                    child: const Text('Delete'),
-                                    onPressed: () {
-                                      Up().update(
-                                        id: docid,
-                                        collection: collection,
-                                        receiverid: reciverid,
-                                        layer: layer,
-                                        who: who,
-                                        status: true,
-                                      );
-                                      Navigator.pop(context);
-                                    }),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
+                bottomsheet(
+                    context: context,
+                    docid: docid,
+                    collection: collection,
+                    reciverid: reciverid,
+                    layer: layer,
+                    who: who,
+                    status: true);
               }
             },
             child: Container(
-              width: size.width,
+              width: size.width / 2,
               alignment: map['sendBy'] == _auth.currentUser!.displayName
                   ? Alignment.centerRight
                   : Alignment.centerLeft,
@@ -152,7 +102,7 @@ class Massege {
                                 SizedBox(
                                   height: size.height / 200,
                                 ),
-                                SelectableText(
+                                SelectableAutoLinkText(
                                   map['message'],
                                   showCursor: true,
                                   selectionControls: _controls,
@@ -161,12 +111,20 @@ class Massege {
                                     fontWeight: FontWeight.w500,
                                     color: Colors.white,
                                   ),
+                                  linkStyle: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                  highlightedLinkStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    backgroundColor: Colors.black,
+                                  ),
+                                  onTap: (url) => launchUrlString(url),
                                 ),
                               ],
                             )
                           : Column(
                               children: [
-                                SelectableText(
+                                SelectableAutoLinkText(
                                   map['message'],
                                   showCursor: true,
                                   selectionControls: _controls,
@@ -175,12 +133,20 @@ class Massege {
                                     fontWeight: FontWeight.w500,
                                     color: Colors.white,
                                   ),
+                                  linkStyle: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                  highlightedLinkStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    backgroundColor: Colors.black,
+                                  ),
+                                  onTap: (url) => launchUrlString(url),
                                 ),
                               ],
                             )
                       : Column(
                           children: [
-                            SelectableText(
+                            SelectableAutoLinkText(
                               map['message'],
                               showCursor: true,
                               selectionControls: _controls,
@@ -189,6 +155,14 @@ class Massege {
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
                               ),
+                              linkStyle:
+                                  TextStyle(fontSize: 16, color: Colors.white),
+                              highlightedLinkStyle: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                backgroundColor: Colors.black,
+                              ),
+                              onTap: (url) => launchUrlString(url),
                             ),
                           ],
                         )),
@@ -198,45 +172,18 @@ class Massege {
           return InkWell(
             onLongPress: () {
               if (map['sendBy'] == _auth.currentUser!.displayName) {
-                showModalBottomSheet<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      height: 70,
-                      color: Colors.white,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                    child: const Text('Delete'),
-                                    onPressed: () {
-                                      Up().update(
-                                        id: docid,
-                                        collection: collection,
-                                        receiverid: reciverid,
-                                        layer: layer,
-                                        who: who,
-                                        status: true,
-                                      );
-                                      Navigator.pop(context);
-                                    }),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
+                bottomsheet(
+                    context: context,
+                    docid: docid,
+                    collection: collection,
+                    reciverid: reciverid,
+                    layer: layer,
+                    who: who,
+                    status: true);
               }
             },
             child: Container(
-              width: size.width,
+              width: size.width / 2,
               alignment: map['sendBy'] == _auth.currentUser!.displayName
                   ? Alignment.centerRight
                   : Alignment.centerLeft,

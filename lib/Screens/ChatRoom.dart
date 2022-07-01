@@ -8,6 +8,7 @@ class ChatRoom extends StatelessWidget {
   final String reciverId, currentReciverName;
   ChatRoom({required this.reciverId, required this.currentReciverName});
   final TextEditingController _message = TextEditingController();
+  final ScrollController scrollController = new ScrollController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final bool status = false;
@@ -93,7 +94,7 @@ class ChatRoom extends StatelessWidget {
             children: [
               SafeArea(
                 child: Container(
-                  height: size.height / 1.25,
+                  height: size.height *8/10,
                   width: size.width,
                   child: StreamBuilder<QuerySnapshot>(
                     stream: _firestore
@@ -108,13 +109,19 @@ class ChatRoom extends StatelessWidget {
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.data != null) {
                         return ListView.builder(
+                          controller: scrollController,
                           itemCount: snapshot.data!.docs.length,
                           itemBuilder: (context, index) {
                             Map<String, dynamic> map =
                                 snapshot.data!.docs[index].data()
                                     as Map<String, dynamic>;
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (scrollController.hasClients) {
+                                scrollController.jumpTo(
+                                    scrollController.position.maxScrollExtent);
+                              }
+                            });
                             return Massege().messages(
-                              size: size,
                               map: map,
                               context: context,
                               collection: collection,
@@ -136,7 +143,7 @@ class ChatRoom extends StatelessWidget {
                 ),
               ),
               Container(
-                height: size.height / 10,
+                height: size.height /10,
                 width: size.width,
                 alignment: Alignment.center,
                 child: Container(
@@ -149,6 +156,7 @@ class ChatRoom extends StatelessWidget {
                         height: size.height / 17,
                         width: size.width / 1.3,
                         child: TextField(
+                          keyboardType:TextInputType.multiline,
                           controller: _message,
                           decoration: InputDecoration(
                               suffixIcon: IconButton(

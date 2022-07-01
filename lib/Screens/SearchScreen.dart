@@ -20,7 +20,7 @@ class _SearchScreen extends State<SearchScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     setStatus("Online");
   }
 
@@ -45,17 +45,21 @@ class _SearchScreen extends State<SearchScreen> with WidgetsBindingObserver {
     setState(() {
       isLoading = true;
     });
-    await _firestore
-        .collection('users')
-        .doc(_auth.currentUser!.uid)
-        .collection('chatrooms')
-        .get()
-        .then((value) {
-      setState(() {
-        chatrooms = value.docs;
-        isLoading = false;
+    try {
+      await _firestore
+          .collection('users')
+          .doc(_auth.currentUser!.uid)
+          .collection('chatrooms')
+          .get()
+          .then((value) {
+        setState(() {
+          chatrooms = value.docs;
+          isLoading = false;
+        });
       });
-    });
+    } catch (e) {
+      print(e);
+    }
 
     for (int i = 0; i < chatrooms.length; i++) {
       if (chatrooms[i]['id'] == userMap!['uid']) {
@@ -98,21 +102,31 @@ class _SearchScreen extends State<SearchScreen> with WidgetsBindingObserver {
     setState(() {
       isLoading = true;
     });
-    if (_search.text.isNotEmpty) {
-      await _firestore
-          .collection('users')
-          .where("email", isEqualTo: _search.text.trim())
-          .get()
-          .then((value) {
-        setState(() {
-          userMap = value.docs[0].data();
-          isLoading = false;
+    try {
+      if (_search.text.isNotEmpty) {
+        await _firestore
+            .collection('users')
+            .where("email",
+                isEqualTo: _search.text.trim(),
+                isNull: isLoading=false
+                )
+            .get()
+            .then((value) {
+          setState(() {
+            userMap = value.docs[0].data();
+            isLoading = false;
+          });
+          print(userMap);
         });
-        print(userMap);
-      });
-    } else {
-      isLoading = false;
-      return;
+      } else {
+        isLoading = false;
+        return;
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Accont Not Found"),
+        duration: const Duration(seconds: 3),
+      ));
     }
   }
 
@@ -127,7 +141,7 @@ class _SearchScreen extends State<SearchScreen> with WidgetsBindingObserver {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home Screen"),
+        title: Text("Search Screen"),
         actions: [
           IconButton(icon: Icon(Icons.logout), onPressed: () => logout())
         ],
