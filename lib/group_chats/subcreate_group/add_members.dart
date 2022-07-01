@@ -45,7 +45,7 @@ class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
   }
 
   Future onSearch() async {
-    await _firestore
+    try {await _firestore
         .collection('groups')
         .doc(widget.groupChatId)
         .get()
@@ -59,7 +59,13 @@ class _AddMembersInsubGroup extends State<AddMembersInsubGroup> {
           userMap = membersListadd[i];
         });
       }
+    }} catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Accont Not Found"),
+        duration: const Duration(seconds: 3),
+      ));
     }
+    
   }
 
   void onResultTap() {
