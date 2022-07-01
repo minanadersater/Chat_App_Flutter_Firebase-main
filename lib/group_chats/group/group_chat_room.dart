@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/group_chats/group/group_info.dart';
-import '../../packges/upload_file.dart';
 import '../../widgets/massege.dart';
 
 class GroupChatRoom extends StatelessWidget {
@@ -132,19 +131,7 @@ class GroupChatRoom extends StatelessWidget {
                         child: TextField(
                           controller: _message,
                           decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                onPressed: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => UploadFile(
-                                        chatRoom: groupChatId,
-                                        collection: collection,
-                                        layer: '',
-                                        who: 1,
-                                      ),
-                                    )),
-                                icon: Icon(Icons.file_upload_outlined),
-                              ),
+                              
                               hintText: "Send Message",
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),

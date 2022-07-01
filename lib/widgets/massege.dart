@@ -227,7 +227,7 @@ class Massege {
                                     IconButton(
                                         onPressed: () {
                                           downloadFile(
-                                              map['message'], map['filename']);
+                                              map['message']);
                                         },
                                         icon: const Icon(Icons.download,
                                             color: Colors.black))
@@ -256,7 +256,7 @@ class Massege {
                                     IconButton(
                                         onPressed: () {
                                           downloadFile(
-                                              map['message'], map['filename']);
+                                              map['message']);
                                         },
                                         icon: const Icon(Icons.download,
                                             color: Colors.black))
@@ -285,7 +285,7 @@ class Massege {
                                 IconButton(
                                     onPressed: () {
                                       downloadFile(
-                                          map['message'], map['filename']);
+                                          map['message']);
                                     },
                                     icon: const Icon(Icons.download,
                                         color: Colors.black))

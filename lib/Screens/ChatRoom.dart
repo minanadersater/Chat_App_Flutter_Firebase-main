@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../packges/upload_file.dart';
 import '../widgets/massege.dart';
 
 class ChatRoom extends StatelessWidget {
@@ -159,19 +158,7 @@ class ChatRoom extends StatelessWidget {
                           keyboardType:TextInputType.multiline,
                           controller: _message,
                           decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                onPressed: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => UploadFile(
-                                        chatRoom: reciverId,
-                                        collection: collection,
-                                        layer: reciverId,
-                                        who: 3,
-                                      ),
-                                    )),
-                                icon: Icon(Icons.photo),
-                              ),
+                              
                               hintText: "Send Message",
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
