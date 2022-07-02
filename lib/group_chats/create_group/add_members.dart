@@ -45,23 +45,25 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
     setState(() {
       isLoading = true;
     });
-try {await _firestore
-        .collection('users')
-        .where("email", isEqualTo: _search.text.trim(),isNull: isLoading=false)
-        .get()
-        .then((value) {
-      setState(() {
-        userMap = value.docs[0].data();
-        isLoading = false;
+    try {
+      await _firestore
+          .collection('users')
+          .where("email",
+              isEqualTo: _search.text.trim(), isNull: isLoading = false)
+          .get()
+          .then((value) {
+        setState(() {
+          userMap = value.docs[0].data();
+          isLoading = false;
+        });
+        print(userMap);
       });
-      print(userMap);
-    });} catch (e) {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Accont Not Found"),
         duration: const Duration(seconds: 3),
       ));
     }
-    
   }
 
   void onResultTap() {
@@ -81,8 +83,6 @@ try {await _firestore
           "uid": userMap!['uid'],
           "isAdmin": false,
         });
-
-        
       });
     }
   }
